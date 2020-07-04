@@ -91,7 +91,6 @@ HRESULT D3DAPI hooks::menu::present( IDirect3DDevice9* device, const RECT* src, 
 			should_lock_cursor = false;
 		}
 	}
-	ImGui::GetIO( ).MouseDrawCursor = gui->is_open;
 
 	ImGui::EndFrame( );
 	ImGui::Render( );
