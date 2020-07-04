@@ -46,10 +46,10 @@ namespace interfaces {
 		throw std::runtime_error( module_name + " wasn't found" );
 	}
 
-	extern iv_engine_client* engine;
-	extern i_surface* surface;
-	extern i_input_system* input_system;
-	extern IDirect3DDevice9* directx;
+	inline iv_engine_client* engine;
+	inline i_surface* surface;
+	inline i_input_system* input_system;
+	inline IDirect3DDevice9* directx;
 
 	void initialize( );
 }
