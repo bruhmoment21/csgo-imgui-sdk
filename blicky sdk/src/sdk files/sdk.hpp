@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../other files/utilities/utilities.hpp"
-#include "../core files/hooks/hooks.hpp"
 #include "../core files/gui/gui.hpp"
 
 #include "interfaces/iv_engine_client.hpp"
@@ -18,9 +17,6 @@
 #include <vector>
 
 #include <d3d9.h>
-#include <d3dx9.h>
-#pragma comment(lib, "d3d9.lib")
-#pragma comment(lib, "d3dx9.lib")
 
 #include "../other files/imgui/imgui.h"
 #include "../other files/imgui/imgui_impl_dx9.h"
