@@ -1,10 +1,5 @@
 #include "sdk.hpp"
 
-iv_engine_client* interfaces::engine = nullptr;
-i_surface* interfaces::surface = nullptr;
-i_input_system* interfaces::input_system = nullptr;
-IDirect3DDevice9* interfaces::directx = nullptr;
-
 void interfaces::initialize( ) {
 	
 	engine = get_interface<iv_engine_client>( "engine.dll", "VEngineClient014" );
