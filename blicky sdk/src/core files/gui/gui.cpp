@@ -14,6 +14,7 @@ c_gui::c_gui( ) noexcept {
     ImGuiIO& io = ImGui::GetIO( );
     io.IniFilename = nullptr;
     io.LogFilename = nullptr;
+    io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
     io.Fonts->Flags |= ImFontAtlasFlags_NoPowerOfTwoHeight;
 
     if ( PWSTR path_to_fonts; SUCCEEDED( SHGetKnownFolderPath( FOLDERID_Fonts, 0, nullptr, &path_to_fonts ) ) ) {
