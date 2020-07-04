@@ -1,4 +1,5 @@
 #include "../sdk files/sdk.hpp"
+#include "hooks/hooks.hpp"
 
 DWORD WINAPI StartAddress( LPVOID instance ) {
 
