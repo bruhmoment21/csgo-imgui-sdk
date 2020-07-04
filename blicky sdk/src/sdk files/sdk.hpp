@@ -45,7 +45,6 @@ namespace interfaces {
 	inline iv_engine_client* engine;
 	inline i_surface* surface;
 	inline i_input_system* input_system;
-	inline IDirect3DDevice9* directx;
 
 	void initialize( );
 }
