@@ -18,13 +18,13 @@ void hooks::initialize( ) {
 	
 	MH_Initialize( );
 
-	MH_CreateHook( **reinterpret_cast< void*** >( utilities::pattern_scan( GetModuleHandleA( "gameoverlayrenderer.dll" ), "FF 15 ? ? ? ? 8B F8 85 FF 78 18" ) + 2 ), &menu::reset, reinterpret_cast< void** >( &reset_original ) );
-	MH_CreateHook( **reinterpret_cast< void*** >( utilities::pattern_scan( GetModuleHandleA( "gameoverlayrenderer.dll" ), "FF 15 ? ? ? ? 8B F8 85 DB" ) + 2 ), &menu::present, reinterpret_cast< void** >( &present_original ) );
-	MH_CreateHook( lock_cursor_target, &surface::lock_cursor, reinterpret_cast< void** >( &lock_cursor_original ) );
+	MH_CreateHook( **reinterpret_cast< void*** >( utilities::pattern_scan( GetModuleHandleA( "gameoverlayrenderer.dll" ), "FF 15 ? ? ? ? 8B F8 85 FF 78 18" ) + 2 ), reinterpret_cast< LPVOID >( &menu::reset ), reinterpret_cast< void** >( &reset_original ) );
+	MH_CreateHook( **reinterpret_cast< void*** >( utilities::pattern_scan( GetModuleHandleA( "gameoverlayrenderer.dll" ), "FF 15 ? ? ? ? 8B F8 85 DB" ) + 2 ), reinterpret_cast< LPVOID >( &menu::present ), reinterpret_cast< void** >( &present_original ) );
+	MH_CreateHook( lock_cursor_target, reinterpret_cast< LPVOID >( &surface::lock_cursor ), reinterpret_cast< void** >( &lock_cursor_original ) );
 	
 	MH_EnableHook( nullptr );
 
-	std::cout << "Hooks are good!" << std::endl;
+	std::cout << "Hooks are good!\n";
 }
 
 void hooks::release( ) {
