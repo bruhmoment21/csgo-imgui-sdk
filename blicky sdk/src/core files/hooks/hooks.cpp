@@ -1,7 +1,7 @@
 #include "hooks.hpp"
 #include "../../other files/minhook/minhook.h"
 
-static bool context_created = false, should_lock_cursor = true;
+static bool context_created, should_lock_cursor{ true };
 
 hooks::menu::present_fn present_original = nullptr;
 hooks::menu::reset_fn reset_original = nullptr;
@@ -74,7 +74,7 @@ HRESULT D3DAPI hooks::menu::present( IDirect3DDevice9* device, const RECT* src, 
 	ImGui_ImplDX9_Init( device );
 	
 	device->SetRenderState( D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_RED | D3DCOLORWRITEENABLE_GREEN | D3DCOLORWRITEENABLE_BLUE );
-	/* uncomment this if you wish to disable anti aliasing
+	/* uncomment this if you wish to disable anti aliasing. see gui.cpp too
 	* device->SetRenderState( D3DRS_MULTISAMPLEANTIALIAS, FALSE );
 	* device->SetRenderState( D3DRS_ANTIALIASEDLINEENABLE, FALSE );
 	*/
