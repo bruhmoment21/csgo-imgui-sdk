@@ -5,10 +5,8 @@ namespace hooks {
 	void initialize( );
 	void release( );
 
-	extern WNDPROC original_wnd_proc;
-
-	inline unsigned int get_virtual( void* _class, const unsigned int index ) {
-		return static_cast< unsigned int >( ( *static_cast< int** >( _class ) )[ index ] );
+	inline unsigned int get_virtual( void* class_name, const unsigned int index ) {
+		return static_cast< unsigned int >( ( *static_cast< int** >( class_name ) )[ index ] );
 	}
 	
 	namespace menu {
