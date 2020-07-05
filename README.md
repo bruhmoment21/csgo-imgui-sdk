@@ -7,4 +7,4 @@ basic csgo sdk that has only imgui and surface's lock cursor function only.
 <br/>imgui version: 1.77 (latest release)
 
 # menu
-![image](https://imgur.com/a/G5TmJiJ)
+![image](https://i.imgur.com/JLXJE2j.png)
