@@ -1,5 +1,7 @@
 #pragma once
-#include "../../sdk files/sdk.hpp"
+#include <d3d9.h>
+
+class i_surface; // forward declare instead of including header when possible(good practice)
 
 namespace hooks {
 	void initialize( );
