@@ -50,7 +50,8 @@ LRESULT WINAPI hooks::menu::wnd_proc( HWND window, UINT msg, WPARAM wparm, LPARA
 		ImGui_ImplWin32_Init( window );
 		gui = std::make_unique<c_gui>( );
 		once = true;
-		context_created = true;
+		context_created = true; // if you delete this bool present hook will run before wnd_proc hook and will result in a error(exception) and your game will crash
+		// it crashes because Context isn't created
 	}
 	
 	LRESULT ImGui_ImplWin32_WndProcHandler( HWND hwnd, UINT msg, WPARAM wparm, LPARAM lparm );
@@ -68,11 +69,15 @@ HRESULT D3DAPI hooks::menu::reset( IDirect3DDevice9* device, D3DPRESENT_PARAMETE
 
 HRESULT D3DAPI hooks::menu::present( IDirect3DDevice9* device, const RECT* src, const RECT* dest, HWND window_override, const RGNDATA* dirty_region ) {
 
-	if ( !context_created ) return FALSE;
+	if ( !context_created ) return FALSE; // this prevents this hook from running before wndproc
 	
 	ImGui_ImplDX9_Init( device );
 	
 	device->SetRenderState( D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_RED | D3DCOLORWRITEENABLE_GREEN | D3DCOLORWRITEENABLE_BLUE );
+	/* uncomment this if you wish to disable anti aliasing
+	* device->SetRenderState( D3DRS_MULTISAMPLEANTIALIAS, FALSE );
+	* device->SetRenderState( D3DRS_ANTIALIASEDLINEENABLE, FALSE );
+	*/
 	IDirect3DVertexDeclaration9* vertexDeclaration;
 	device->GetVertexDeclaration( &vertexDeclaration );
 
@@ -105,7 +110,7 @@ HRESULT D3DAPI hooks::menu::present( IDirect3DDevice9* device, const RECT* src, 
 
 void __stdcall hooks::surface::lock_cursor( ) noexcept {
 
-	if ( should_lock_cursor )
+	if ( should_lock_cursor ) // if you use gui->open instead of this bool you'll get a crash
 		return interfaces::surface->unlock_cursor( );
 
 	lock_cursor_original( interfaces::surface );
