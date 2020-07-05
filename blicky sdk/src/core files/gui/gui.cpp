@@ -4,13 +4,18 @@
 #include "../../sdk files/sdk.hpp"
 
 c_gui::c_gui( ) noexcept {
+	
     ImGui::StyleColorsDark( );
 
     ImGuiStyle& style = ImGui::GetStyle( );
     style.ScrollbarSize = 13.0f;
     style.WindowTitleAlign = { 0.5f, 0.5f };
     style.Colors[ ImGuiCol_WindowBg ].w = 0.8f;
-
+    /* uncomment this if you wish to disable anti aliasing (you must uncomment the one from hooks.cpp too)
+    * style.AntiAliasedLines = false;
+    * style.AntiAliasedFill = false;
+    */
+	
     ImGuiIO& io = ImGui::GetIO( );
     io.IniFilename = nullptr;
     io.LogFilename = nullptr;
@@ -29,10 +34,10 @@ c_gui::c_gui( ) noexcept {
     }
 }
 
-void c_gui::render( ) const noexcept {
-    static bool checkbox = false;
-    static float pfloat = 0.f;
-    static bool gucci_bool = false;
+void c_gui::render( ) const noexcept { // you may make this static in the future
+	
+    static bool checkbox, gucci_bool;
+    static float pfloat{ 0.f };
 	
     ImGui::Begin( "blicky sdk");
 
