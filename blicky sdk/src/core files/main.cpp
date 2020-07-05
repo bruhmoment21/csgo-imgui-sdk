@@ -9,7 +9,7 @@ DWORD WINAPI StartAddress( LPVOID instance ) {
 		interfaces::initialize( );
 		hooks::initialize( );
 	} catch ( const std::runtime_error& ex ) {
-		std::cout << "Exception: \n\n" << ex.what( ) << "\n\n";
+		std::cout << "Exception: \n\n" << ex.what( ) << '\n';
 		system( "pause" );
 		FreeLibraryAndExitThread( static_cast< HMODULE >( instance ), 1 );
 	}
