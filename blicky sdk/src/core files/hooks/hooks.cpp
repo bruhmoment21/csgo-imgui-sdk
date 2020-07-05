@@ -58,7 +58,7 @@ LRESULT WINAPI hooks::menu::wnd_proc( HWND window, UINT msg, WPARAM wparm, LPARA
 	ImGui_ImplWin32_WndProcHandler( window, msg, wparm, lparm );
 	interfaces::input_system->enable_input( !gui->is_open );
 	
-	return CallWindowProcW( original_wnd_proc, window, msg, wparm, lparm );
+	return CallWindowProcA( original_wnd_proc, window, msg, wparm, lparm );
 }
 
 HRESULT D3DAPI hooks::menu::reset( IDirect3DDevice9* device, D3DPRESENT_PARAMETERS* params ) {
