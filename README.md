@@ -2,4 +2,4 @@
 SDK with imgui.
 
 basic csgo sdk that has only imgui and surface's lock cursor function only.
-hooking method: minhook
+hooking library: minhook. imgui version: 1.77
