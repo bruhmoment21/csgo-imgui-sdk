@@ -8,7 +8,7 @@ hooks::menu::reset_fn reset_original = nullptr;
 
 hooks::surface::lock_cursor_fn lock_cursor_original = nullptr;
 
-WNDPROC	hooks::original_wnd_proc;
+static WNDPROC original_wnd_proc;
 
 void hooks::initialize( ) {
 
