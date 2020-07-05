@@ -39,7 +39,7 @@ void c_gui::render( ) const noexcept { // you may make this static in the future
     static bool checkbox, gucci_bool;
     static float pfloat{ 0.f };
 	
-    ImGui::Begin( "blicky sdk");
+    ImGui::Begin( "blicky sdk", nullptr, ImGuiWindowFlags_AlwaysAutoResize );
 
     ImGui::Text( "Test text." );
     ImGui::Checkbox( "Test checkbox", &checkbox );
