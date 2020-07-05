@@ -1,5 +1,7 @@
 #include "hooks.hpp"
+
 #include "../../other files/minhook/minhook.h"
+#include "../../sdk files/sdk.hpp"
 
 static bool context_created, should_lock_cursor{ true };
 
