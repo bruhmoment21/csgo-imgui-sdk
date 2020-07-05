@@ -6,5 +6,5 @@ void interfaces::initialize( ) {
 	surface = get_interface<i_surface>( "vguimatsurface.dll", "VGUI_Surface031" );
 	input_system = get_interface<i_input_system>( "inputsystem.dll", "InputSystemVersion001" );
 	
-	std::cout << "Interfaces are good!" << std::endl;
+	std::cout << "Interfaces are good!\n";
 }
