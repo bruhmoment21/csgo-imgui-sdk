@@ -1,4 +1,5 @@
 #pragma once
+//#include "constants.hpp"								Uncomment when needed
 #include <cmath>
 
 class vec3_t {
