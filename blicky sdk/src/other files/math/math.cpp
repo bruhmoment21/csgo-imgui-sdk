@@ -11,7 +11,7 @@
 
 bool math::world_to_screen( const vec3_t& origin, ImVec2& screen ) {
 
-    static std::uintptr_t view_matrix; // engine get_view_matrix will cause flickering if you have multithreading enabled
+    static std::uintptr_t view_matrix; // engine get_view_matrix will cause flickering if you have multithreading enabled and draw using dx9
     if ( !view_matrix )
         view_matrix = *reinterpret_cast< std::uintptr_t* >( reinterpret_cast< std::uintptr_t >( utilities::pattern_scan( GetModuleHandleA( "client.dll" ), "0F 10 05 ? ? ? ? 8D 85 ? ? ? ? B9" ) ) + 3 ) + 176;
 
