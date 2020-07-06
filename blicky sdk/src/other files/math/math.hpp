@@ -1,6 +1,6 @@
 #pragma once
-#include "helpers/vec3_t.hpp"
 
+class vec3_t;
 struct ImVec2;
 
 namespace math {
