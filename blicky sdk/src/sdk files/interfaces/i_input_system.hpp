@@ -148,11 +148,6 @@ public:
 		return ( *reinterpret_cast< original_fn** >( this ) )[ 11 ]( this, enable );
 	}
 
-	bool is_button_down( const button_code_t code ) {
-		using original_fn = bool( __thiscall* )( void*, button_code_t );
-		return ( *reinterpret_cast< original_fn** >( this ) )[ 15 ]( this, code );
-	}
-
 	void reset_input_state( ) {
 		using original_fn = void( __thiscall* )( void* );
 		return ( *reinterpret_cast<original_fn**>(this) )[ 39 ]( this );
