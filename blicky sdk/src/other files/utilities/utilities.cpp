@@ -23,7 +23,7 @@ void utilities::free_console( ) {
 	FreeConsole( );
 }
 
-std::uint8_t* utilities::pattern_scan( void* module, const char* signature ) {
+std::uint8_t* utilities::pattern_scan( const char* module, const char* signature ) {
 	
     static auto pattern_to_byte = [ ]( const char* pattern ) {
         auto bytes = std::vector<int>{};
@@ -44,12 +44,12 @@ std::uint8_t* utilities::pattern_scan( void* module, const char* signature ) {
         return bytes;
     };
 
-    auto* const dos_headers = static_cast< PIMAGE_DOS_HEADER >( module );
-    auto* const nt_headers = reinterpret_cast< PIMAGE_NT_HEADERS >( static_cast< std::uint8_t* >( module ) + dos_headers->e_lfanew );
+    auto* const dos_headers = reinterpret_cast< PIMAGE_DOS_HEADER >( GetModuleHandleA( module ) );
+    auto* const nt_headers = reinterpret_cast< PIMAGE_NT_HEADERS >( reinterpret_cast< std::uint8_t* >( GetModuleHandleA( module ) ) + dos_headers->e_lfanew );
 
     const auto size_of_image = nt_headers->OptionalHeader.SizeOfImage;
     auto pattern_bytes = pattern_to_byte( signature );
-    auto* const scan_bytes = static_cast< std::uint8_t* >( module );
+    auto* const scan_bytes = reinterpret_cast< std::uint8_t* >( GetModuleHandleA( module ) );
 
     const auto size = pattern_bytes.size( );
     auto* const data = pattern_bytes.data( );
