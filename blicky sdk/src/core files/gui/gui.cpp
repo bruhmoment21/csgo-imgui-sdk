@@ -34,7 +34,7 @@ c_gui::c_gui( ) noexcept {
     }
 }
 
-void c_gui::render( ) const noexcept { // you may make this static in the future
+void c_gui::render( ) noexcept {
 	
     static bool checkbox, gucci_bool;
     static float pfloat{ 0.f };
