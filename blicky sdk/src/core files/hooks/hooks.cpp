@@ -12,6 +12,11 @@ hooks::surface::lock_cursor_fn lock_cursor_original = nullptr;
 
 static WNDPROC original_wnd_proc;
 
+// used in present hook to fix server browser not showing when injecting
+IDirect3DVertexDeclaration9* vert_declaration;
+IDirect3DVertexShader9* vert_shader;
+DWORD old_d3drs_colorwriteenable;
+
 void hooks::initialize( ) {
 
 	auto* const lock_cursor_target = reinterpret_cast< void* >( get_virtual( interfaces::surface, 67 ) );
@@ -73,6 +78,17 @@ HRESULT D3DAPI hooks::menu::present( IDirect3DDevice9* device, const RECT* src, 
 
 	if ( !context_created ) return FALSE; // this prevents this hook from running before wndproc
 	
+	// save state so you see server browser
+	device->GetRenderState( D3DRS_COLORWRITEENABLE, &old_d3drs_colorwriteenable );
+	device->GetVertexDeclaration( &vert_declaration );
+	device->GetVertexShader( &vert_shader );
+	device->SetRenderState( D3DRS_COLORWRITEENABLE, 0xffffffff );
+	device->SetRenderState( D3DRS_SRGBWRITEENABLE, false );
+	device->SetSamplerState( NULL, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP );
+	device->SetSamplerState( NULL, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP );
+	device->SetSamplerState( NULL, D3DSAMP_ADDRESSW, D3DTADDRESS_WRAP );
+	device->SetSamplerState( NULL, D3DSAMP_SRGBTEXTURE, NULL );
+	
 	ImGui_ImplDX9_Init( device );
 	
 	/* uncomment this if you wish to disable anti aliasing. see gui.cpp too
@@ -103,6 +119,12 @@ HRESULT D3DAPI hooks::menu::present( IDirect3DDevice9* device, const RECT* src, 
 		ImGui_ImplDX9_RenderDrawData( ImGui::GetDrawData( ) );
 		device->EndScene( );
 	}
+
+	// restore state save state so you see server browser
+	device->SetRenderState( D3DRS_COLORWRITEENABLE, old_d3drs_colorwriteenable );
+	device->SetRenderState( D3DRS_SRGBWRITEENABLE, true );
+	device->SetVertexDeclaration( vert_declaration );
+	device->SetVertexShader( vert_shader );
 	
 	return present_original( device, src, dest, window_override, dirty_region );
 }
