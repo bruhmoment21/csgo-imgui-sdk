@@ -2,7 +2,6 @@
 
 #include <Windows.h>
 #include <stdexcept>
-#include <cstdio>
 #include <vector>
 
 void utilities::allocate_console( ) {
