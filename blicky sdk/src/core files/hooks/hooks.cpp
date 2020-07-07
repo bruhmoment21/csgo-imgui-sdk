@@ -13,9 +13,9 @@ hooks::surface::lock_cursor_fn lock_cursor_original = nullptr;
 static WNDPROC original_wnd_proc;
 
 // used in present hook to fix server browser not showing when injecting
-IDirect3DVertexDeclaration9* vert_declaration;
-IDirect3DVertexShader9* vert_shader;
-DWORD old_d3drs_colorwriteenable;
+static IDirect3DVertexDeclaration9* vert_declaration;
+static IDirect3DVertexShader9* vert_shader;
+static DWORD old_d3drs_colorwriteenable;
 
 void hooks::initialize( ) {
 
