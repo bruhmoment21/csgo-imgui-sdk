@@ -1,12 +1,12 @@
 #pragma once
-#include "../../other files/imgui/imgui.h"
-
 #include <memory>
+
+struct ImFont;
 
 class c_gui {
 public:
     c_gui( ) noexcept;
-    void render( ) const noexcept;
+    static void render( ) noexcept;
 
     bool is_open = true;
 private:
