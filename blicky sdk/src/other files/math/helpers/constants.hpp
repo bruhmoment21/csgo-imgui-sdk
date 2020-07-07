@@ -9,10 +9,10 @@ public:
 	static constexpr std::uint32_t FLOAT32_NAN_BITS			 = 0x7FC00000;
 	
 	static constexpr float RAD2DEG( const float x ) {
-		return static_cast< float >( x ) * static_cast< float >( 180.f / PI_FLOAT );
+		return x * 180.f / PI_FLOAT;
 	}
 
 	static constexpr float DEG2RAD( const float x ) {
-		return static_cast< float >( x ) * static_cast< float >( PI_FLOAT / 180.f );
+		return x * PI_FLOAT / 180.f;
 	}
 };
