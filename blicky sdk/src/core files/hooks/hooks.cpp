@@ -51,12 +51,10 @@ void hooks::release( ) {
 
 LRESULT WINAPI hooks::menu::wnd_proc( HWND window, UINT msg, WPARAM wparm, LPARAM lparm ) {
 
-	static bool once;
-	if ( !once ) {
+	if ( !gui ) { // checks if gui is nullptr
 		ImGui::CreateContext( );
 		ImGui_ImplWin32_Init( window );
-		gui = std::make_unique<c_gui>( );
-		once = true;
+		gui = std::make_unique<c_gui>( ); // after this line has been hit this code block won't run anymore
 		context_created = true; // if you delete this bool present hook will run before wnd_proc hook and will result in a error(exception) and your game will crash
 		// it crashes because Context isn't created
 	}
