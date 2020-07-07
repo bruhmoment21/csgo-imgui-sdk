@@ -7,8 +7,6 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "../imgui/imgui_internal.h"
 
-#include <Windows.h>
-
 bool math::world_to_screen( const vec3_t& origin, ImVec2& screen ) {
 
     static std::uintptr_t view_matrix; // engine get_view_matrix will cause flickering if you have multithreading enabled and draw using dx9
