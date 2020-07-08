@@ -56,7 +56,7 @@ LRESULT WINAPI hooks::menu::wnd_proc( HWND window, UINT msg, WPARAM wparm, LPARA
 		ImGui_ImplWin32_Init( window );
 		gui = std::make_unique<c_gui>( ); // after this line has been hit this code block won't run anymore
 		context_created = true; // if you delete this bool present hook will run before wnd_proc hook and will result in a error(exception) and your game will crash
-		// it crashes because Context isn't created
+		// it crashes because context isn't created
 	}
 	
 	LRESULT ImGui_ImplWin32_WndProcHandler( HWND hwnd, UINT msg, WPARAM wparm, LPARAM lparm );
@@ -76,7 +76,7 @@ HRESULT D3DAPI hooks::menu::present( IDirect3DDevice9* device, const RECT* src, 
 
 	if ( !context_created ) return FALSE; // this prevents this hook from running before wndproc
 	
-	// save state so you see server browser
+	// save state
 	device->GetRenderState( D3DRS_COLORWRITEENABLE, &old_d3drs_colorwriteenable );
 	device->GetVertexDeclaration( &vert_declaration );
 	device->GetVertexShader( &vert_shader );
@@ -118,7 +118,7 @@ HRESULT D3DAPI hooks::menu::present( IDirect3DDevice9* device, const RECT* src, 
 		device->EndScene( );
 	}
 
-	// restore state save state so you see server browser
+	// restore state
 	device->SetRenderState( D3DRS_COLORWRITEENABLE, old_d3drs_colorwriteenable );
 	device->SetRenderState( D3DRS_SRGBWRITEENABLE, true );
 	device->SetVertexDeclaration( vert_declaration );
