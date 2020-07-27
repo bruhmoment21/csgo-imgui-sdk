@@ -18,6 +18,7 @@
     <ClCompile Include="src\other files\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\other files\imgui\imgui_stdlib.cpp" />
     <ClCompile Include="src\core files\gui\gui.cpp" />
+    <ClCompile Include="src\other files\math\math.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\sdk files\sdk.hpp" />
@@ -44,6 +45,12 @@
     <ClInclude Include="src\core files\gui\gui.hpp" />
     <ClInclude Include="src\sdk files\interfaces\i_input_system.hpp" />
     <ClInclude Include="src\sdk files\interfaces\i_surface.hpp" />
+    <ClInclude Include="src\other files\math\math.hpp" />
+    <ClInclude Include="src\other files\math\helpers\constants.hpp" />
+    <ClInclude Include="src\other files\math\helpers\matrices.hpp" />
+    <ClInclude Include="src\other files\math\helpers\vec3_t.hpp" />
+    <ClInclude Include="src\sdk files\virtual_method.hpp" />
+    <ClInclude Include="src\other files\json\json.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="src\other files\imgui\LICENSE.txt" />

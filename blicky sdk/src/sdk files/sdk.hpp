@@ -9,37 +9,25 @@
 
 #include <Windows.h>
 #include <iostream>
-#include <string>
-#include <cstdio>
-#include <chrono>
-#include <thread>
-#include <unordered_map>
-#include <vector>
-
-#include <d3d9.h>
-
-#include "../other files/imgui/imgui.h"
-#include "../other files/imgui/imgui_impl_dx9.h"
-#include "../other files/imgui/imgui_impl_win32.h"
 
 namespace interfaces {
-	template <typename T>
-	T* get_interface( const std::string& module_name, const std::string& interface_name ) {
-		
-		using create_interface_fn = void* ( * )( const char*, int* );
-		const auto fn = reinterpret_cast< create_interface_fn >( GetProcAddress( GetModuleHandleA( module_name.c_str( ) ), "CreateInterface" ) );
 
-		if ( fn )
-		{
-			void* result = fn( interface_name.c_str( ), nullptr );
-			
+	template <typename T>
+	T* get_interface( const char* module_name, const char* interface_name ) {
+
+		using create_interface_fn = void* ( * )( const char*, int* );
+		const auto fn{ reinterpret_cast< create_interface_fn >( GetProcAddress( GetModuleHandleA( module_name ), "CreateInterface" ) ) };
+
+		if ( fn ) {
+			void* result{ fn( interface_name, nullptr ) };
+
 			if ( !result )
-				throw std::runtime_error( interface_name + " wasn't found in " + module_name );
-			
+				throw std::runtime_error( "One interface not found. Attach debugger for more info!" );
+
 			return static_cast< T* >( result );
 		}
 
-		throw std::runtime_error( module_name + " wasn't found" );
+		throw std::runtime_error( "Module name wasn't found!" );
 	}
 
 	inline iv_engine_client* engine;

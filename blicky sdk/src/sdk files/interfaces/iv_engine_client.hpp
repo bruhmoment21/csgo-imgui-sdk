@@ -1,4 +1,5 @@
 #pragma once
+#include "../virtual_method.hpp"
 
 struct player_info_t {
 	__int64 unknown;
@@ -13,7 +14,7 @@ struct player_info_t {
 	char name[ 128 ];
 	int user_id;
 	char steam_id[ 20 ];
-	char pad[ 0x10 ];
+	char pad[ 16 ];
 	unsigned long isteam_id;
 	char friends_name[ 128 ];
 	bool fake_player; // is bot
@@ -25,7 +26,6 @@ struct player_info_t {
 class iv_engine_client {
 public:
 	int max_clients( ) {
-		using original_fn = int( __thiscall* )( iv_engine_client* );
-		return ( *reinterpret_cast< original_fn** >( this ) )[ 20 ]( this );
+		return virtual_method::call_virtual<int, 20>( this );
 	}
 };

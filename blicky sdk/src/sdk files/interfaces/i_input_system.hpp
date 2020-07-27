@@ -1,4 +1,5 @@
 #pragma once
+#include "../virtual_method.hpp"
 
 enum class analog_code_t {
 	analog_code_invalid = -1,
@@ -144,12 +145,10 @@ enum class button_code_t {
 class i_input_system {
 public:
 	void enable_input( const bool enable ) {
-		using original_fn = void( __thiscall* )( void*, bool );
-		return ( *reinterpret_cast< original_fn** >( this ) )[ 11 ]( this, enable );
+		return virtual_method::call_virtual<void, 11, bool>( this, enable );
 	}
 
 	void reset_input_state( ) {
-		using original_fn = void( __thiscall* )( void* );
-		return ( *reinterpret_cast<original_fn**>(this) )[ 39 ]( this );
+		return virtual_method::call_virtual<void, 39>( this );
 	}
 };

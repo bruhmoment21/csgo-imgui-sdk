@@ -1,7 +1,9 @@
+#include "gui.hpp"
+
+#include "../../other files/imgui/imgui.h"
+
 #include <ShlObj.h>
 #include <filesystem>
-
-#include "../../sdk files/sdk.hpp"
 
 c_gui::c_gui( ) noexcept {
 	
