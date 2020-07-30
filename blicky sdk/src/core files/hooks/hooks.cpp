@@ -11,29 +11,26 @@ namespace hooks {
 
 	bool context_created{ false }, should_lock_cursor{ true };
 
-	menu::present_fn present_original{ nullptr };
-	menu::reset_fn reset_original{ nullptr };
-
-	surface::lock_cursor_fn lock_cursor_original{ nullptr };
-
 	WNDPROC original_wnd_proc{ nullptr };
 
-	// used in present hook to fix server browser not showing when injecting
+	// used in present hook to fix server browser not showing after injecting
 	IDirect3DVertexDeclaration9* vert_declaration{ nullptr };
 	IDirect3DVertexShader9* vert_shader{ nullptr };
 	DWORD old_d3drs_colorwriteenable{ NULL };
 
 	void initialize( ) {
 
-		auto* const lock_cursor_target{ get_virtual( interfaces::surface, 67 ) };
+		void* const reset_target{ **reinterpret_cast< void*** >( utilities::pattern_scan( "gameoverlayrenderer.dll", "FF 15 ? ? ? ? 8B F8 85 FF 78 18" ) + 2 ) };
+		void* const present_target{ **reinterpret_cast< void*** >( utilities::pattern_scan( "gameoverlayrenderer.dll", "FF 15 ? ? ? ? 8B F8 85 DB" ) + 2 ) };
+		void* const lock_cursor_target{ get_virtual( interfaces::surface, 67 ) };
 
-		original_wnd_proc = reinterpret_cast< WNDPROC >( SetWindowLongPtrA( FindWindowA( "Valve001", nullptr ), GWL_WNDPROC, reinterpret_cast< LONG >( menu::wnd_proc ) ) );
+		original_wnd_proc = reinterpret_cast< WNDPROC >( SetWindowLongA( FindWindowA( "Valve001", nullptr ), GWL_WNDPROC, reinterpret_cast< LONG >( menu::wnd_proc ) ) );
 
 		MH_Initialize( );
 
-		MH_CreateHook( **reinterpret_cast< void*** >( utilities::pattern_scan( "gameoverlayrenderer.dll", "FF 15 ? ? ? ? 8B F8 85 FF 78 18" ) + 2 ), reinterpret_cast< LPVOID >( &menu::reset ), reinterpret_cast< void** >( &reset_original ) );
-		MH_CreateHook( **reinterpret_cast< void*** >( utilities::pattern_scan( "gameoverlayrenderer.dll", "FF 15 ? ? ? ? 8B F8 85 DB" ) + 2 ), reinterpret_cast< LPVOID >( &menu::present ), reinterpret_cast< void** >( &present_original ) );
-		MH_CreateHook( lock_cursor_target, reinterpret_cast< LPVOID >( &surface::lock_cursor ), reinterpret_cast< void** >( &lock_cursor_original ) );
+		MH_CreateHook( reset_target, reinterpret_cast< LPVOID >( &menu::reset ), reinterpret_cast< void** >( &menu::reset_original ) );
+		MH_CreateHook( present_target, reinterpret_cast< LPVOID >( &menu::present ), reinterpret_cast< void** >( &menu::present_original ) );
+		MH_CreateHook( lock_cursor_target, reinterpret_cast< LPVOID >( &surface::lock_cursor ), reinterpret_cast< void** >( &surface::lock_cursor_original ) );
 
 		MH_EnableHook( nullptr );
 
@@ -93,12 +90,12 @@ namespace hooks {
 		device->SetSamplerState( NULL, D3DSAMP_ADDRESSW, D3DTADDRESS_WRAP );
 		device->SetSamplerState( NULL, D3DSAMP_SRGBTEXTURE, NULL );
 
-		ImGui_ImplDX9_Init( device );
-
 		/* uncomment this if you wish to disable anti aliasing. see gui.cpp too
 		* device->SetRenderState( D3DRS_MULTISAMPLEANTIALIAS, FALSE );
 		* device->SetRenderState( D3DRS_ANTIALIASEDLINEENABLE, FALSE );
 		*/
+
+		ImGui_ImplDX9_Init( device );
 
 		ImGui_ImplDX9_NewFrame( );
 		ImGui_ImplWin32_NewFrame( );
