@@ -3,13 +3,13 @@
 
 #include <thread>
 
-static uint32_t alloc_count;
+/*static uint32_t alloc_count;
 
 void* operator new( size_t size ) { // keep track of heap allocations
 	++alloc_count;
 	std::cout << alloc_count << '\n';
 	return malloc( size );
-}
+}*/
 
 DWORD WINAPI StartAddress( LPVOID instance ) {
 

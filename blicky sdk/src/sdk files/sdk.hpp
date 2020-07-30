@@ -15,11 +15,11 @@ namespace interfaces {
 	template <typename T>
 	T* get_interface( const char* module_name, const char* interface_name ) {
 
-		using create_interface_fn = void* ( * )( const char*, int* );
-		const auto fn{ reinterpret_cast< create_interface_fn >( GetProcAddress( GetModuleHandleA( module_name ), "CreateInterface" ) ) };
+		const auto module{ GetModuleHandleA( module_name ) };
+		auto* const create_interface_fn{ reinterpret_cast< void* ( * )( const char*, int* ) >( GetProcAddress( module, "CreateInterface" ) ) };
 
-		if ( fn ) {
-			void* const result{ fn( interface_name, nullptr ) };
+		if ( create_interface_fn ) {
+			void* const result{ create_interface_fn( interface_name, nullptr ) };
 
 			if ( !result )
 				throw std::runtime_error( "One interface not found. Attach debugger for more info!" );
@@ -30,9 +30,9 @@ namespace interfaces {
 		throw std::runtime_error( "One module name wasn't found!" );
 	}
 
-	inline iv_engine_client* engine;
-	inline i_surface* surface;
-	inline i_input_system* input_system;
+	inline iv_engine_client* engine{ nullptr };
+	inline i_surface* surface{ nullptr };
+	inline i_input_system* input_system{ nullptr };
 
 	void initialize( );
 }
