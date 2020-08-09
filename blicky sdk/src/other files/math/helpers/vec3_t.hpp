@@ -16,7 +16,7 @@ public:
 		this->z = value.z;
 	}
 
-	// operations
+	// operators
 	vec3_t operator+( const vec3_t& vector ) const {
 		return vec3_t{ x + vector.x, y + vector.y, z + vector.z };
 	}

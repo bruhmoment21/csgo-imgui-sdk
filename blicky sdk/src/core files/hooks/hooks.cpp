@@ -9,11 +9,11 @@
 
 namespace hooks {
 
-	bool context_created{ false }, should_lock_cursor{ true };
+	bool context_created{ false }; // Prevents present hook running before WNDPROC hook.
 
 	WNDPROC original_wnd_proc{ nullptr };
 
-	// used in present hook to fix server browser not showing after injecting
+	// Used in present hook to fix server browser not showing after injecting.
 	IDirect3DVertexDeclaration9* vert_declaration{ nullptr };
 	IDirect3DVertexShader9* vert_shader{ nullptr };
 	DWORD old_d3drs_colorwriteenable{ NULL };
@@ -54,17 +54,17 @@ namespace hooks {
 
 	LRESULT WINAPI menu::wnd_proc( HWND window, UINT msg, WPARAM wparm, LPARAM lparm ) {
 
-		if ( !gui ) { // checks if gui is nullptr
+		if ( !gui::initialized ) {
+
 			ImGui::CreateContext( );
 			ImGui_ImplWin32_Init( window );
-			gui = std::make_unique<c_gui>( ); // after this line has been hit this code block won't run anymore
-			context_created = true; // if you delete this bool present hook will run before wnd_proc hook and will result in a error(exception) and your game will crash
-			// it crashes because context isn't created
+			gui::init( );
+			context_created = true;
 		}
 
 		LRESULT ImGui_ImplWin32_WndProcHandler( HWND hwnd, UINT msg, WPARAM wparm, LPARAM lparm );
 		ImGui_ImplWin32_WndProcHandler( window, msg, wparm, lparm );
-		interfaces::input_system->enable_input( !gui->is_open );
+		interfaces::input_system->enable_input( !gui::is_open );
 
 		return CallWindowProcA( original_wnd_proc, window, msg, wparm, lparm );
 	}
@@ -77,9 +77,9 @@ namespace hooks {
 
 	HRESULT D3DAPI menu::present( IDirect3DDevice9* device, const RECT* src, const RECT* dest, HWND window_override, const RGNDATA* dirty_region ) {
 
-		if ( !context_created ) return FALSE; // this prevents this hook from running before wndproc
+		if ( !context_created ) return FALSE;
 
-		// save state
+		// Save state
 		device->GetRenderState( D3DRS_COLORWRITEENABLE, &old_d3drs_colorwriteenable );
 		device->GetVertexDeclaration( &vert_declaration );
 		device->GetVertexShader( &vert_shader );
@@ -101,27 +101,26 @@ namespace hooks {
 		ImGui_ImplWin32_NewFrame( );
 		ImGui::NewFrame( );
 
-		if ( gui->is_open )
-			gui->render( );
+		if ( gui::is_open )
+			gui::render( );
 
 		if ( ImGui::IsKeyPressed( VK_INSERT, false ) ) {
-			gui->is_open = !gui->is_open;
-			should_lock_cursor = true;
-			if ( !gui->is_open ) {
+
+			gui::is_open = !gui::is_open;
+			if ( !gui::is_open )
 				interfaces::input_system->reset_input_state( );
-				should_lock_cursor = false;
-			}
 		}
 
 		ImGui::EndFrame( );
 		ImGui::Render( );
 
 		if ( device->BeginScene( ) == D3D_OK ) {
+
 			ImGui_ImplDX9_RenderDrawData( ImGui::GetDrawData( ) );
 			device->EndScene( );
 		}
 
-		// restore state
+		// Restore state
 		device->SetRenderState( D3DRS_COLORWRITEENABLE, old_d3drs_colorwriteenable );
 		device->SetRenderState( D3DRS_SRGBWRITEENABLE, true );
 		device->SetVertexDeclaration( vert_declaration );
@@ -132,7 +131,7 @@ namespace hooks {
 
 	void __stdcall surface::lock_cursor( ) noexcept {
 
-		if ( should_lock_cursor ) // if you use gui->open instead of this bool you'll get a crash
+		if ( gui::initialized && gui::is_open ) // if you use gui->open instead of this bool you'll get a crash
 			return interfaces::surface->unlock_cursor( );
 
 		lock_cursor_original( interfaces::surface );
