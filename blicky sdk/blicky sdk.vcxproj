@@ -141,7 +141,10 @@
     <ClInclude Include="src\other files\minhook\minhook.h" />
     <ClInclude Include="src\other files\minhook\trampoline.h" />
     <ClInclude Include="src\other files\utilities\utilities.hpp" />
+    <ClInclude Include="src\sdk files\classes\econ_item.hpp" />
+    <ClInclude Include="src\sdk files\interfaces\c_player_inventory.hpp" />
     <ClInclude Include="src\sdk files\interfaces\iv_engine_client.hpp" />
+    <ClInclude Include="src\sdk files\interfaces\i_effects.hpp" />
     <ClInclude Include="src\sdk files\interfaces\i_input_system.hpp" />
     <ClInclude Include="src\sdk files\interfaces\i_surface.hpp" />
     <ClInclude Include="src\sdk files\sdk.hpp" />

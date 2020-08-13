@@ -131,7 +131,7 @@ namespace hooks {
 
 	void __stdcall surface::lock_cursor( ) noexcept {
 
-		if ( gui::initialized && gui::is_open ) // if you use gui->open instead of this bool you'll get a crash
+		if ( gui::is_open )
 			return interfaces::surface->unlock_cursor( );
 
 		lock_cursor_original( interfaces::surface );

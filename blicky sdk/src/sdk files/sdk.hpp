@@ -7,6 +7,7 @@
 #include "interfaces/iv_engine_client.hpp"
 #include "interfaces/i_input_system.hpp"
 #include "interfaces/i_surface.hpp"
+#include "interfaces/i_effects.hpp"
 
 #include <iostream>
 
@@ -15,10 +16,11 @@ namespace interfaces {
 	template <typename T>
 	inline T* get_interface( const char* module_name, const char* interface_name ) {
 
-		const auto module{ GetModuleHandleA( module_name ) };
+		auto* const module{ GetModuleHandleA( module_name ) };
 		auto* const create_interface_fn{ reinterpret_cast< void* ( * )( const char*, int* ) >( GetProcAddress( module, "CreateInterface" ) ) };
 
 		if ( create_interface_fn ) {
+
 			void* const result{ create_interface_fn( interface_name, nullptr ) };
 
 			if ( !result )
@@ -33,6 +35,7 @@ namespace interfaces {
 	inline iv_engine_client* engine{ nullptr };
 	inline i_surface* surface{ nullptr };
 	inline i_input_system* input_system{ nullptr };
+	inline i_effects* effects{ nullptr };
 	inline c_player_inventory* inventory{ nullptr };
 	inline c_player_inventory* inventory_manager{ nullptr };
 

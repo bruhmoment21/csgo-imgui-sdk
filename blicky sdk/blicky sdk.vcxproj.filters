@@ -51,6 +51,9 @@
     <ClInclude Include="src\other files\math\helpers\vec3_t.hpp" />
     <ClInclude Include="src\sdk files\virtual_method.hpp" />
     <ClInclude Include="src\other files\json\json.hpp" />
+    <ClInclude Include="src\sdk files\interfaces\c_player_inventory.hpp" />
+    <ClInclude Include="src\sdk files\classes\econ_item.hpp" />
+    <ClInclude Include="src\sdk files\interfaces\i_effects.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="src\other files\imgui\LICENSE.txt" />

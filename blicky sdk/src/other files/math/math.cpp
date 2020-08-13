@@ -12,7 +12,7 @@ namespace math {
 
     bool world_to_screen( const vec3_t& origin, ImVec2& screen ) {
 
-        static std::uintptr_t view_matrix; // Engine function will cause flickering when drawing with dx9 with multithreading enabled. (dwGetViewMatrix)
+        static std::uintptr_t view_matrix; // Engine function will cause flickering when drawing with dx9 with multithreading enabled. (dwViewMatrix)
         if ( !view_matrix )
             view_matrix = *reinterpret_cast< std::uintptr_t* >( utilities::pattern_scan( "client.dll", "0F 10 05 ? ? ? ? 8D 85 ? ? ? ? B9" ) + 3 ) + 176;
 

@@ -5,7 +5,8 @@
 
 /*static uint32_t alloc_count;
 
-void* operator new( size_t size ) { // keep track of heap allocations
+void* operator new( size_t size ) {						// Keep track of heap allocations
+	
 	++alloc_count;
 	std::cout << alloc_count << '\n';
 	return malloc( size );

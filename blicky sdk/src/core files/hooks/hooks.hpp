@@ -8,7 +8,7 @@ namespace hooks {
 	void initialize( );
 	void release( );
 
-	inline void* get_virtual( void* class_name, const unsigned int index ) noexcept {
+	inline void* get_virtual( void* const class_name, const unsigned int index ) noexcept {
 		return reinterpret_cast< void* >( ( *static_cast< int** >( class_name ) )[ index ] );
 	}
 
