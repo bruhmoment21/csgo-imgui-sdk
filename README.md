@@ -3,7 +3,7 @@ sdk for csgo
 <br/>**features**:
 <br/>hooking library: minhook
 <br/>[imgui](https://github.com/ocornut/imgui). version: 1.77 (latest release)
-<br/>[json](https://github.com/nlohmann/json) for config system. version: 3.8.0 (latest release)
+<br/>[json](https://github.com/nlohmann/json) for config system. version: 3.9.1 (latest release)
 <br/>barebone math classes (vec3_t, matrix3x4, matrix4x4 and constants)
 <br/>good to start writing your own cheat
 # menu
