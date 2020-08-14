@@ -1,6 +1,6 @@
 #include "utilities.hpp"
 
-#include <Windows.h>
+#include <windows.h>
 #include <stdexcept>
 #include <vector>
 
@@ -44,7 +44,8 @@ namespace utilities {
         };
 
         void* const module{ GetModuleHandleA( module_name ) };
-
+        if ( !module ) throw std::runtime_error( module_name + std::string{ " is not a good module!" } );
+             
         auto* const dos_headers{ static_cast< PIMAGE_DOS_HEADER >( module ) };
         auto* const nt_headers{ reinterpret_cast< PIMAGE_NT_HEADERS >( static_cast< std::uint8_t* >( module ) + dos_headers->e_lfanew ) };
 
@@ -67,6 +68,6 @@ namespace utilities {
         }
 
         // If you get printed the signature printed in console means its outdated
-        throw std::runtime_error( signature );
+        throw std::runtime_error( signature + std::string{ " is not a good signature!" } );
     }
 }

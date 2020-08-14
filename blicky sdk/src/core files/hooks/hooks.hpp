@@ -5,8 +5,8 @@ class i_surface; // forward declare instead of including header when possible(go
 
 namespace hooks {
 
-	void initialize( );
-	void release( );
+	void initialize( ) noexcept;
+	void release( ) noexcept;
 
 	inline void* get_virtual( void* const class_name, const unsigned int index ) noexcept {
 		return reinterpret_cast< void* >( ( *static_cast< int** >( class_name ) )[ index ] );
@@ -16,9 +16,9 @@ namespace hooks {
 		inline HRESULT( __stdcall* reset_original )( IDirect3DDevice9*, D3DPRESENT_PARAMETERS* ) { nullptr };
 		inline HRESULT( __stdcall* present_original )( IDirect3DDevice9*, const RECT*, const RECT*, HWND, const RGNDATA* ) { nullptr };
 
-		LRESULT WINAPI wnd_proc( HWND window, UINT msg, WPARAM wparm, LPARAM lparm );
-		HRESULT D3DAPI reset( IDirect3DDevice9* device, D3DPRESENT_PARAMETERS* params );
-		HRESULT D3DAPI present( IDirect3DDevice9* device, const RECT* src, const RECT* dest, HWND window_override, const RGNDATA* dirty_region );
+		LRESULT WINAPI wnd_proc( HWND window, UINT msg, WPARAM wparm, LPARAM lparm ) noexcept;
+		HRESULT D3DAPI reset( IDirect3DDevice9* device, D3DPRESENT_PARAMETERS* params ) noexcept;
+		HRESULT D3DAPI present( IDirect3DDevice9* device, const RECT* src, const RECT* dest, HWND window_override, const RGNDATA* dirty_region ) noexcept;
 	}
 
 	namespace surface {

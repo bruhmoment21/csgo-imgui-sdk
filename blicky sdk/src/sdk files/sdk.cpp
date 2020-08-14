@@ -2,7 +2,7 @@
 
 namespace interfaces {
 
-	void initialize( ) {
+	void initialize( ) noexcept {
 
 		engine = get_interface<iv_engine_client>( "engine.dll", "VEngineClient014" );
 		surface = get_interface<i_surface>( "vguimatsurface.dll", "VGUI_Surface031" );

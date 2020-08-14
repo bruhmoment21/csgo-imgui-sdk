@@ -2,6 +2,7 @@
 #include "../virtual_method.hpp"
 
 struct player_info_t {
+
 	__int64 unknown;
 	union {
 		__int64 steam_id_64;
@@ -25,7 +26,7 @@ struct player_info_t {
 
 class iv_engine_client {
 public:
-	int max_clients( ) {
+	int max_clients( ) { // 64
 		return virtual_method::call_virtual<int, 20>( this );
 	}
 };

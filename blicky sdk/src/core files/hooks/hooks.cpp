@@ -18,7 +18,7 @@ namespace hooks {
 	IDirect3DVertexShader9* vert_shader{ nullptr };
 	DWORD old_d3drs_colorwriteenable{ NULL };
 
-	void initialize( ) {
+	void initialize( ) noexcept {
 
 		void* const reset_target{ **reinterpret_cast< void*** >( utilities::pattern_scan( "gameoverlayrenderer.dll", "FF 15 ? ? ? ? 8B F8 85 FF 78 18" ) + 2 ) };
 		void* const present_target{ **reinterpret_cast< void*** >( utilities::pattern_scan( "gameoverlayrenderer.dll", "FF 15 ? ? ? ? 8B F8 85 DB" ) + 2 ) };
@@ -37,7 +37,7 @@ namespace hooks {
 		std::cout << "Hooks are good!\n";
 	}
 
-	void release( ) {
+	void release( ) noexcept {
 
 		MH_Uninitialize( );
 
@@ -52,7 +52,7 @@ namespace hooks {
 		ImGui::DestroyContext( );
 	}
 
-	LRESULT WINAPI menu::wnd_proc( HWND window, UINT msg, WPARAM wparm, LPARAM lparm ) {
+	LRESULT WINAPI menu::wnd_proc( HWND window, UINT msg, WPARAM wparm, LPARAM lparm ) noexcept {
 
 		if ( !gui::initialized ) {
 
@@ -69,13 +69,13 @@ namespace hooks {
 		return CallWindowProcA( original_wnd_proc, window, msg, wparm, lparm );
 	}
 
-	HRESULT D3DAPI menu::reset( IDirect3DDevice9* device, D3DPRESENT_PARAMETERS* params ) {
+	HRESULT D3DAPI menu::reset( IDirect3DDevice9* device, D3DPRESENT_PARAMETERS* params ) noexcept {
 
 		ImGui_ImplDX9_InvalidateDeviceObjects( );
 		return reset_original( device, params );
 	}
 
-	HRESULT D3DAPI menu::present( IDirect3DDevice9* device, const RECT* src, const RECT* dest, HWND window_override, const RGNDATA* dirty_region ) {
+	HRESULT D3DAPI menu::present( IDirect3DDevice9* device, const RECT* src, const RECT* dest, HWND window_override, const RGNDATA* dirty_region ) noexcept {
 
 		if ( !context_created ) return FALSE;
 

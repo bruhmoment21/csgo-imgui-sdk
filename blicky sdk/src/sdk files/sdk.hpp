@@ -16,20 +16,14 @@ namespace interfaces {
 	template <typename T>
 	inline T* get_interface( const char* module_name, const char* interface_name ) {
 
-		auto* const module{ GetModuleHandleA( module_name ) };
-		auto* const create_interface_fn{ reinterpret_cast< void* ( * )( const char*, int* ) >( GetProcAddress( module, "CreateInterface" ) ) };
+		const auto module{ GetModuleHandleA( module_name ) };
+		if ( !module ) throw std::runtime_error( module_name + std::string{ " is not a good module!" } );
+		
+		if ( auto* const create_interface_fn{ reinterpret_cast< void* ( * ) ( const char* interface_name, int* return_code ) >( GetProcAddress( module, "CreateInterface" ) ) } )
+			if ( void* const result{ create_interface_fn( interface_name, nullptr ) } )
+				return static_cast< T* >( result );
 
-		if ( create_interface_fn ) {
-
-			void* const result{ create_interface_fn( interface_name, nullptr ) };
-
-			if ( !result )
-				throw std::runtime_error( "One interface not found. Attach debugger for more info!" );
-
-			return static_cast< T* >( result );
-		}
-
-		throw std::runtime_error( "One module name wasn't found!" );
+		throw std::runtime_error( interface_name + std::string{ " is not a good interface!" } );
 	}
 
 	inline iv_engine_client* engine{ nullptr };
@@ -39,5 +33,5 @@ namespace interfaces {
 	inline c_player_inventory* inventory{ nullptr };
 	inline c_player_inventory* inventory_manager{ nullptr };
 
-	void initialize( );
+	void initialize( ) noexcept;
 }
