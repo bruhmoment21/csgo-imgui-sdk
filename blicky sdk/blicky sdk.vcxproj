@@ -97,6 +97,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\core files\gui\gui.cpp" />
+    <ClCompile Include="src\core files\hacks\misc\misc.cpp" />
     <ClCompile Include="src\core files\hooks\hooks.cpp" />
     <ClCompile Include="src\core files\main.cpp" />
     <ClCompile Include="src\other files\imgui\imgui.cpp" />
@@ -116,7 +117,9 @@
     <ClCompile Include="src\sdk files\sdk.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\core files\config\config_system.hpp" />
     <ClInclude Include="src\core files\gui\gui.hpp" />
+    <ClInclude Include="src\core files\hacks\misc\misc.hpp" />
     <ClInclude Include="src\core files\hooks\hooks.hpp" />
     <ClInclude Include="src\other files\imgui\imconfig.h" />
     <ClInclude Include="src\other files\imgui\imgui.h" />
@@ -141,9 +144,14 @@
     <ClInclude Include="src\other files\minhook\minhook.h" />
     <ClInclude Include="src\other files\minhook\trampoline.h" />
     <ClInclude Include="src\other files\utilities\utilities.hpp" />
+    <ClInclude Include="src\sdk files\classes\convar.hpp" />
     <ClInclude Include="src\sdk files\classes\econ_item.hpp" />
+    <ClInclude Include="src\sdk files\classes\entities.hpp" />
+    <ClInclude Include="src\sdk files\interfaces\c_global_vars_bars.hpp" />
     <ClInclude Include="src\sdk files\interfaces\c_player_inventory.hpp" />
     <ClInclude Include="src\sdk files\interfaces\iv_engine_client.hpp" />
+    <ClInclude Include="src\sdk files\interfaces\i_base_client.hpp" />
+    <ClInclude Include="src\sdk files\interfaces\i_console.hpp" />
     <ClInclude Include="src\sdk files\interfaces\i_effects.hpp" />
     <ClInclude Include="src\sdk files\interfaces\i_input_system.hpp" />
     <ClInclude Include="src\sdk files\interfaces\i_surface.hpp" />

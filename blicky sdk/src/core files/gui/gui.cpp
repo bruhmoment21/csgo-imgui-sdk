@@ -1,5 +1,7 @@
 #include "gui.hpp"
 
+#include "../config/config_system.hpp"
+
 #include "../../other files/imgui/imgui.h"
 
 #include <ShlObj.h>
@@ -24,7 +26,8 @@ namespace gui {
         io.IniFilename = nullptr;
         io.LogFilename = nullptr;
         io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
-        io.Fonts->Flags |= ImFontAtlasFlags_NoPowerOfTwoHeight;
+
+        initialized = true;
 
         if ( PWSTR path_to_fonts; SUCCEEDED( SHGetKnownFolderPath( FOLDERID_Fonts, 0, nullptr, &path_to_fonts ) ) ) {
             
@@ -35,33 +38,17 @@ namespace gui {
             ImFontConfig cfg;
             cfg.OversampleV = 3;
 
-            verdana = io.Fonts->AddFontFromFileTTF( ( path / "verdana.ttf" ).string( ).c_str( ), 15.0f, &cfg, ranges );
+            verdana = io.Fonts->AddFontFromFileTTF( ( path / "verdana.ttf" ).string( ).c_str( ), 16.0f, &cfg, ranges );
         }
-
-        initialized = true;
     }
 
     void render( ) noexcept {
 
-        static bool checkbox{ false }, gucci_bool{ false };
-        static float pfloat{ 0.f };
-
         ImGui::Begin( "blicky sdk", nullptr, ImGuiWindowFlags_AlwaysAutoResize );
 
-        ImGui::Text( "Test text." );
-        ImGui::Checkbox( "Test checkbox", &checkbox );
+        ImGui::Checkbox( "Thirdperson", &config::thirdperson );
         if ( ImGui::IsItemHovered( ) )
-            ImGui::SetTooltip( "Very nice" );
-
-        ImGui::SliderFloat( "Test float", &pfloat, 0.0f, 1.0f );
-        if ( ImGui::Button( "Test Button" ) )
-            gucci_bool = !gucci_bool;
-
-        if ( gucci_bool )
-            ImGui::Text( "Nice." );
-
-        ImGui::SameLine( );
-        ImGui::Text( "You are a boss." );
+            ImGui::SetTooltip( "Automatically bound on Middle Mouse Button." );
 
         ImGui::End( );
     }

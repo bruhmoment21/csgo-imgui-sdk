@@ -19,6 +19,7 @@
     <ClCompile Include="src\other files\imgui\imgui_stdlib.cpp" />
     <ClCompile Include="src\core files\gui\gui.cpp" />
     <ClCompile Include="src\other files\math\math.cpp" />
+    <ClCompile Include="src\core files\hacks\misc\misc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\sdk files\sdk.hpp" />
@@ -54,6 +55,13 @@
     <ClInclude Include="src\sdk files\interfaces\c_player_inventory.hpp" />
     <ClInclude Include="src\sdk files\classes\econ_item.hpp" />
     <ClInclude Include="src\sdk files\interfaces\i_effects.hpp" />
+    <ClInclude Include="src\sdk files\classes\convar.hpp" />
+    <ClInclude Include="src\sdk files\interfaces\i_console.hpp" />
+    <ClInclude Include="src\core files\config\config_system.hpp" />
+    <ClInclude Include="src\core files\hacks\misc\misc.hpp" />
+    <ClInclude Include="src\sdk files\interfaces\c_global_vars_bars.hpp" />
+    <ClInclude Include="src\sdk files\interfaces\i_base_client.hpp" />
+    <ClInclude Include="src\sdk files\classes\entities.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="src\other files\imgui\LICENSE.txt" />

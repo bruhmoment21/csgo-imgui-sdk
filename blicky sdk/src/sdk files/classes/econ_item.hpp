@@ -2,36 +2,37 @@
 
 #include "../../other files/utilities/utilities.hpp"
 
+#include <type_traits>
 #include <windows.h>
 #include <cstdint>
 
 enum class item_quality : int {
 
-	ITEM_QUALITY_DEFAULT,
-	ITEM_QUALITY_GENUINE,
-	ITEM_QUALITY_VINTAGE,
-	ITEM_QUALITY_UNUSUAL,
-	ITEM_QUALITY_UNK,
-	ITEM_QUALITY_COMMUNITY,
-	ITEM_QUALITY_DEVELOPER,
-	ITEM_QUALITY_SELFMADE,
-	ITEM_QUALITY_CUSTOMIZED,
-	ITEM_QUALITY_STRANGE,
-	ITEM_QUALITY_COMPLETED,
-	ITEM_QUALITY_UNK2,
-	ITEM_QUALITY_TOURNAMENT
+	item_quality_default,
+	item_quality_genuine,
+	item_quality_vintage,
+	item_quality_unusual,
+	item_quality_unknown,
+	item_quality_community,
+	item_quality_developer,
+	item_quality_selfmade,
+	item_quality_customized,
+	item_quality_strange,
+	item_quality_completed,
+	item_quality_unknown2,
+	item_quality_tournament
 };
 
 enum class item_rarity : int {
 
-	ITEM_RARITY_DEFAULT,
-	ITEM_RARITY_COMMON,
-	ITEM_RARITY_UNCOMMON,
-	ITEM_RARITY_RARE,
-	ITEM_RARITY_MYTHICAL,
-	ITEM_RARITY_LEGENDARY,
-	ITEM_RARITY_ANCIENT,
-	ITEM_RARITY_IMMORTAL
+	item_rarity_default,
+	item_rarity_common,
+	item_rarity_uncommon,
+	item_rarity_rare,
+	item_rarity_mythical,
+	item_rarity_legendary,
+	item_rarity_ancient,
+	item_rarity_immortal
 };
 
 class c_econ_item {
@@ -41,33 +42,33 @@ class c_econ_item {
 
 public:
 	c_econ_item* create_econ_item( ) {
-		static auto fn{ reinterpret_cast< c_econ_item * ( __stdcall* )( ) >( *reinterpret_cast< uintptr_t* >( utilities::pattern_scan( "client.dll", "C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? E8 ? ? ? ? 83 F8 FF 75 09 8D 45 E4 50 E8 ? ? ? ? 8D 45 E4 C7 45 ? ? ? ? ? 50 C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? E8 ? ? ? ? 83 F8 FF 75 09 8D 45 E4 50 E8 ? ? ? ? 8D 45 E4 C7 45 ? ? ? ? ? 50 C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? E8 ? ? ? ? 83 F8 FF 75 09 8D 45 E4 50 E8 ? ? ? ? 8D 45 E4 C7 45 ? ? ? ? ? 50 C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? E8 ? ? ? ? 83 F8 FF 75 09 8D 45 E4 50 E8 ? ? ? ? 8D 45 E4" ) + 3 ) ) };
+		static auto fn{ reinterpret_cast< std::add_pointer_t< c_econ_item* __stdcall( ) > >( *reinterpret_cast< uintptr_t* >( utilities::pattern_scan( "client.dll", "C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? E8 ? ? ? ? 83 F8 FF 75 09 8D 45 E4 50 E8 ? ? ? ? 8D 45 E4 C7 45 ? ? ? ? ? 50 C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? E8 ? ? ? ? 83 F8 FF 75 09 8D 45 E4 50 E8 ? ? ? ? 8D 45 E4 C7 45 ? ? ? ? ? 50 C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? E8 ? ? ? ? 83 F8 FF 75 09 8D 45 E4 50 E8 ? ? ? ? 8D 45 E4 C7 45 ? ? ? ? ? 50 C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? C7 45 ? ? ? ? ? E8 ? ? ? ? 83 F8 FF 75 09 8D 45 E4 50 E8 ? ? ? ? 8D 45 E4" ) + 3 ) ) };
 		return fn( );
 	}
 
-	uintptr_t get_item_schema( ) {
-		static auto fn{ reinterpret_cast< uintptr_t( __stdcall* )( ) >( utilities::pattern_scan( "client.dll", "A1 ? ? ? ? 85 C0 75 53" ) ) };
+	std::uintptr_t get_item_schema( ) {
+		static auto fn{ reinterpret_cast< std::add_pointer_t< std::uintptr_t __stdcall( ) > >( utilities::pattern_scan( "client.dll", "A1 ? ? ? ? 85 C0 75 53" ) ) };
 		return fn( );
 	}
 
-	uint16_t* get_definition_index( ) {
-		return reinterpret_cast< uint16_t* >( this + 0x24 );
+	std::uint16_t* get_definition_index( ) {
+		return reinterpret_cast< std::uint16_t* >( this + 0x24 );
 	}
 
-	uint32_t* get_account_id( ) {
-		return reinterpret_cast< uint32_t* >( this + 0x1C );
+	std::uint32_t* get_account_id( ) {
+		return reinterpret_cast< std::uint32_t* >( this + 0x1C );
 	}
 
-	uint32_t* get_inventory( ) {
-		return reinterpret_cast< uint32_t* >( this + 0x20 );
+	std::uint32_t* get_inventory( ) {
+		return reinterpret_cast< std::uint32_t* >( this + 0x20 );
 	}
 
-	uint64_t* get_item_id( ) {
-		return reinterpret_cast< uint64_t* >( this + 0x8 );
+	std::uint64_t* get_item_id( ) {
+		return reinterpret_cast< std::uint64_t* >( this + 0x8 );
 	}
 
-	uint64_t* get_original_id( ) {
-		return reinterpret_cast< uint64_t* >( this + 0x10 );
+	std::uint64_t* get_original_id( ) {
+		return reinterpret_cast< std::uint64_t* >( this + 0x10 );
 	}
 
 	unsigned char* get_flags( ) {

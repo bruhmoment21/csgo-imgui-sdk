@@ -1,7 +1,12 @@
 #pragma once
+
+#include <type_traits>
 #include <d3d9.h>
 
-class i_surface; // forward declare instead of including header when possible(good practice)
+enum class client_frame_stage_t; // Forward declare instead of including header when possible (Good practice).
+class i_base_client_dll;
+
+class i_surface;
 
 namespace hooks {
 
@@ -13,16 +18,27 @@ namespace hooks {
 	}
 
 	namespace menu {
-		inline HRESULT( __stdcall* reset_original )( IDirect3DDevice9*, D3DPRESENT_PARAMETERS* ) { nullptr };
-		inline HRESULT( __stdcall* present_original )( IDirect3DDevice9*, const RECT*, const RECT*, HWND, const RGNDATA* ) { nullptr };
+		inline std::add_pointer_t< HRESULT __stdcall( IDirect3DDevice9*, D3DPRESENT_PARAMETERS* ) > reset_original{ nullptr };
+		inline std::add_pointer_t< HRESULT __stdcall( IDirect3DDevice9*, const RECT*, const RECT*, HWND, const RGNDATA* ) > present_original{ nullptr };
 
-		LRESULT WINAPI wnd_proc( HWND window, UINT msg, WPARAM wparm, LPARAM lparm ) noexcept;
-		HRESULT D3DAPI reset( IDirect3DDevice9* device, D3DPRESENT_PARAMETERS* params ) noexcept;
-		HRESULT D3DAPI present( IDirect3DDevice9* device, const RECT* src, const RECT* dest, HWND window_override, const RGNDATA* dirty_region ) noexcept;
+		LRESULT __stdcall wnd_proc( HWND window, UINT msg, WPARAM wparm, LPARAM lparm ) noexcept;
+		HRESULT __stdcall reset( IDirect3DDevice9* device, D3DPRESENT_PARAMETERS* params ) noexcept;
+		HRESULT __stdcall present( IDirect3DDevice9* device, const RECT* src, const RECT* dest, HWND window_override, const RGNDATA* dirty_region ) noexcept;
+	}
+
+	namespace client {
+		inline void( __thiscall* frame_stage_notify_original )( i_base_client_dll*, client_frame_stage_t ) { nullptr };
+
+		void __stdcall frame_stage_notify( const client_frame_stage_t frame_stage ) noexcept;
 	}
 
 	namespace surface {
 		inline void( __thiscall* lock_cursor_original )( i_surface* ) { nullptr };
 		void __stdcall lock_cursor( ) noexcept;
+	}
+
+	namespace sv_cheats {
+		inline std::add_pointer_t< bool __fastcall( void* ) > original{ nullptr };
+		bool __fastcall hook( void* convar, int edx ) noexcept;
 	}
 }

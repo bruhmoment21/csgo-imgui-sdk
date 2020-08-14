@@ -147,10 +147,10 @@ enum class button_code_t {
 class i_input_system {
 public:
 	void enable_input( const bool enable ) {
-		return virtual_method::call_virtual<void, 11, bool>( this, enable );
+		return virtual_method::call_virtual< void, 11, bool >( this, enable );
 	}
 
 	void reset_input_state( ) {
-		return virtual_method::call_virtual<void, 39>( this );
+		return virtual_method::call_virtual< void, 39 >( this );
 	}
 };

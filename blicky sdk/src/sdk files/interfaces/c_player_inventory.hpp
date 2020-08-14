@@ -8,7 +8,7 @@ class entity_t;
 class c_shared_object_type_cache {
 public:
 	void add_object( void* obj ) {
-		return virtual_method::call_virtual<void, 1, void*>( this, obj );
+		return virtual_method::call_virtual< void, 1, void* >( this, obj );
 	}
 };
 

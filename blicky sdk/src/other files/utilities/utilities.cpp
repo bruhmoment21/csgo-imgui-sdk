@@ -27,7 +27,7 @@ namespace utilities {
     std::uint8_t* pattern_scan( const char* module_name, const char* signature ) {
 
         static auto pattern_to_byte = [ ]( const char* pattern ) {
-            auto bytes{ std::vector<int>{ } };
+            auto bytes{ std::vector< int >{ } };
             auto* const start{ const_cast< char* >( pattern ) };
             auto* const end{ const_cast< char* >( pattern ) + strlen( pattern ) };
 

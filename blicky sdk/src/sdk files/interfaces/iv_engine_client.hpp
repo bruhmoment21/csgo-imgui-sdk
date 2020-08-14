@@ -26,7 +26,22 @@ struct player_info_t {
 
 class iv_engine_client {
 public:
-	int max_clients( ) { // 64
-		return virtual_method::call_virtual<int, 20>( this );
+	int max_clients( ) { // Always 64.
+		return virtual_method::call_virtual< int, 20 >( this );
+	}
+
+	bool is_in_game( ) {
+		return virtual_method::call_virtual< bool, 26 >( this );
+	}
+
+	bool is_connected( ) {
+		return virtual_method::call_virtual< bool, 27 >( this );
+	}
+
+	bool connected_and_in_game( ) {
+		if ( is_in_game( ) && is_connected( ) )
+			return true;
+
+		return false;
 	}
 };
