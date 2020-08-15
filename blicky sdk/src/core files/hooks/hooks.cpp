@@ -1,5 +1,6 @@
 #include "hooks.hpp"
 
+#include "../../sdk files/netvars/netvar_manager.hpp"
 #include "../../other files/minhook/minhook.h"
 #include "../config/config_system.hpp"
 #include "../../sdk files/sdk.hpp"
@@ -27,6 +28,8 @@ namespace hooks {
 		void* const reset_target{ **reinterpret_cast< void*** >( utilities::pattern_scan( "gameoverlayrenderer.dll", "FF 15 ? ? ? ? 8B F8 85 FF 78 18" ) + 2 ) };
 		void* const present_target{ **reinterpret_cast< void*** >( utilities::pattern_scan( "gameoverlayrenderer.dll", "FF 15 ? ? ? ? 8B F8 85 DB" ) + 2 ) };
 		void* const frame_stage_notify_target{ get_virtual( interfaces::client, 37 ) };
+		void* const emit_sound_target{ get_virtual( interfaces::engine_sound, 5 ) };
+		void* const custom_layout_popup_parameters_target{ utilities::pattern_scan( "client.dll", "55 8B EC A1 ? ? ? ? 56 57 68 ? ? ? ? 8B 78 24" ) }; // All credits go to hinnie. Better methods have been posted on the same thread tho.
 		void* const lock_cursor_target{ get_virtual( interfaces::surface, 67 ) };
 		void* const sv_cheats_target{ get_virtual( interfaces::console->get_convar( "sv_cheats" ), 13 ) };
 
@@ -37,6 +40,8 @@ namespace hooks {
 		MH_CreateHook( reset_target, static_cast< LPVOID >( &menu::reset ), reinterpret_cast< void** >( &menu::reset_original ) );
 		MH_CreateHook( present_target, static_cast< LPVOID >( &menu::present ), reinterpret_cast< void** >( &menu::present_original ) );
 		MH_CreateHook( frame_stage_notify_target, static_cast< LPVOID >( &client::frame_stage_notify ), reinterpret_cast< void** >( &client::frame_stage_notify_original ) );
+		MH_CreateHook( emit_sound_target, static_cast< LPVOID >( &engine::emit_sound ), reinterpret_cast< void** >( &engine::emit_sound_original ) );
+		MH_CreateHook( custom_layout_popup_parameters_target, static_cast< LPVOID >( &custom_layout_popup_parameters::hook ), reinterpret_cast< void** >( &custom_layout_popup_parameters::original ) );
 		MH_CreateHook( lock_cursor_target, static_cast< LPVOID >( &surface::lock_cursor ), reinterpret_cast< void** >( &surface::lock_cursor_original ) );
 		MH_CreateHook( sv_cheats_target, static_cast< LPVOID >( &sv_cheats::hook ), reinterpret_cast< void** >( &sv_cheats::original ) );
 
@@ -48,11 +53,8 @@ namespace hooks {
 	void release( ) noexcept {
 
 		MH_Uninitialize( );
-
 		MH_DisableHook( nullptr );
-
 		SetWindowLongA( FindWindowA( "Valve001", nullptr ), GWL_WNDPROC, reinterpret_cast< LONG >( original_wnd_proc ) );
-
 		interfaces::input_system->enable_input( true );
 
 		ImGui_ImplDX9_Shutdown( );
@@ -112,8 +114,6 @@ namespace hooks {
 		if ( gui::is_open )
 			gui::render( );
 
-		misc::thirdperson( );
-
 		if ( ImGui::IsKeyPressed( VK_INSERT, false ) ) {
 
 			gui::is_open = !gui::is_open;
@@ -141,7 +141,37 @@ namespace hooks {
 
 	void __stdcall client::frame_stage_notify( client_frame_stage_t frame_stage ) noexcept {
 		
+		if ( interfaces::engine->connected_and_in_game( ) ) {
+
+			misc::thirdperson( );
+		}
+
 		frame_stage_notify_original( interfaces::client, frame_stage );
+	}
+
+	void __stdcall hooks::engine::emit_sound( i_recipient_filter& filter, int ent_index, int channel, const char* entry, unsigned int hash, const char* sample, float vol, int seed, float attenuation, int flags, int pitch, const vec3_t* origin, const vec3_t* direction, void* utl_origin, bool update_pos, float soundtime, int speakerentity, int unk ) noexcept {
+		
+		if ( fnv::hash( entry ) == fnv::hash( "UIPanorama.popup_accept_match_beep" ) && config::auto_accept ) {
+
+			static auto set_local_player_ready{ reinterpret_cast< std::add_pointer_t< bool __stdcall( const char* ) > >( utilities::pattern_scan( "client.dll", "55 8B EC 83 E4 F8 8B 4D 08 BA ? ? ? ? E8 ? ? ? ? 85 C0 75 12" ) ) }; // Probably this is the correct name.
+			if ( !set_local_player_ready ) return;
+
+			set_local_player_ready( "" );
+			auto* const window{ FindWindowA( "Valve001", nullptr ) };
+			FLASHWINFO flash{ sizeof FLASHWINFO, window, FLASHW_TRAY | FLASHW_TIMERNOFG, 0, 0 };
+			FlashWindowEx( &flash );
+			ShowWindow( window, SW_RESTORE );
+		}
+
+		emit_sound_original( interfaces::engine_sound, filter, ent_index, channel, entry, hash, sample, vol, seed, attenuation, flags, pitch, origin, direction, utl_origin, update_pos, soundtime, speakerentity, unk );
+	}
+
+	int __stdcall custom_layout_popup_parameters::hook( int a1, char* popup_file, char* popup_params ) noexcept {
+		
+		if ( char* occurance = strstr( popup_params, "false" ); occurance && config::auto_accept )
+			strncpy_s( occurance, 5, "true", 4 ); // strncpy deprecated.
+
+		return original( a1, popup_file, popup_params );
 	}
 
 	void __stdcall surface::lock_cursor( ) noexcept {
@@ -152,7 +182,7 @@ namespace hooks {
 		lock_cursor_original( interfaces::surface );
 	}
 
-	bool __fastcall sv_cheats::hook( void* convar, int edx ) noexcept {
+	bool __fastcall sv_cheats::hook( void* convar ) noexcept {
 
 		static auto cam_think{ utilities::pattern_scan( "client.dll", "85 C0 75 30 38 86" ) };
 

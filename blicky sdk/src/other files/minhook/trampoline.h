@@ -35,8 +35,8 @@
 // 8-bit relative jump.
 typedef struct _JMP_REL_SHORT
 {
-    UINT8  opcode;      // EB xx: JMP +2+xx
-    UINT8  operand;
+    unsigned int opcode;      // EB xx: JMP +2+xx
+    unsigned int operand;
 } JMP_REL_SHORT, *PJMP_REL_SHORT;
 
 // 32-bit direct relative jump/call.

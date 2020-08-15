@@ -50,6 +50,10 @@ namespace gui {
         if ( ImGui::IsItemHovered( ) )
             ImGui::SetTooltip( "Automatically bound on Middle Mouse Button." );
 
+        ImGui::Checkbox( "Auto Accept", &config::auto_accept );
+        if ( ImGui::IsItemHovered( ) )
+            ImGui::SetTooltip( "hinnie's method of accepting match (It clicks the button)." );
+
         ImGui::End( );
     }
 }

@@ -4,7 +4,7 @@
 
 #include <type_traits>
 
-enum class cvar_flags {
+enum class cvar_flags : int {
 
 	fcvar_none = 0,
 	fcvar_unregistered = 1 << 0,

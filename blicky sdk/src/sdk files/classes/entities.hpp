@@ -3,7 +3,7 @@
 #include "../../other files/math/helpers/vec3_t.hpp"
 #include "../virtual_method.hpp"
 
-enum class client_frame_stage_t {
+enum class client_frame_stage_t : int {
 
     // Haven't run any frames yet.
     frame_undefined = -1,

@@ -29,7 +29,11 @@ namespace interfaces {
 		throw std::runtime_error( interface_name + std::string{ " is not a good interface!" } );
 	}
 
+	// Void pointers are classes that I think their methods aren't helpful.
+
 	inline i_input_system*			input_system{ nullptr };
+	inline void*					engine_sound{ nullptr };
+	inline void*					client_mode{ nullptr };
 	inline c_global_vars_base*		globals{ nullptr };
 	inline i_surface*				surface{ nullptr };
 	inline i_console*				console{ nullptr };

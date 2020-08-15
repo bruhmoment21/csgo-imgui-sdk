@@ -9,8 +9,8 @@ struct player_info_t {
 		struct {
 			__int32 xuid_low;
 			__int32 xuid_high;
-		};
-	};
+		} account;
+	} steam;
 	
 	char name[ 128 ];
 	int user_id;
