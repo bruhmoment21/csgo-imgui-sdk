@@ -5,8 +5,8 @@
 
 namespace misc {
 
-	void thirdperson( ) noexcept {	// I don't know if this thirdperson is detected. I'll delete this comment if it isn't.
-									// This could be the best thirdperson method.
+	void thirdperson( ) noexcept {
+									
 		static bool in_third_person{ false };
 		static float last_time{ 0.f };
 
