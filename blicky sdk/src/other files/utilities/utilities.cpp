@@ -1,43 +1,30 @@
 #include "utilities.hpp"
 
-#include <windows.h>
+#include "../../sdk files/sdk.hpp"
+
 #include <stdexcept>
 #include <vector>
 
 namespace utilities {
-
-    void allocate_console( ) noexcept {
-
-        AllocConsole( );
-
-        freopen_s( reinterpret_cast< FILE** >stdin, "conin$", "r", stdin );
-        freopen_s( reinterpret_cast< FILE** >stdout, "conout$", "w", stdout );
-
-        SetConsoleTitleA( "blicky sdk" );
-    }
-
-    void free_console( ) noexcept {
-
-        fclose( stdin );
-        fclose( stdout );
-
-        FreeConsole( );
-    }
-
     std::uint8_t* pattern_scan( const char* module_name, const char* signature ) {
-
-        static auto pattern_to_byte = [ ]( const char* pattern ) {
+        const auto pattern_to_byte = [ & ]( ) {
             auto bytes{ std::vector< int >{ } };
-            auto* const start{ const_cast< char* >( pattern ) };
-            auto* const end{ const_cast< char* >( pattern ) + strlen( pattern ) };
 
-            for ( auto* current{ start }; current < end; ++current ) {
+            const auto pattern_length{ strlen( signature ) };
+            bytes.reserve( pattern_length );
+
+            char* const start{ const_cast< char* >( signature ) };
+            char* const end{ start + pattern_length };
+
+            for ( char* current{ start }; current < end; ++current ) {
                 if ( *current == '?' ) {
                     ++current;
                     if ( *current == '?' ) ++current;
 
                     bytes.emplace_back( -1 );
-                } else bytes.emplace_back( strtoul( current, &current, 16 ) );
+                } else {
+                    bytes.emplace_back( strtoul( current, &current, 16 ) );
+                }
             }
 
             return bytes;
@@ -45,12 +32,12 @@ namespace utilities {
 
         void* const module{ GetModuleHandleA( module_name ) };
         if ( !module ) throw std::runtime_error( module_name + std::string{ " is not a good module!" } );
-             
+
         auto* const dos_headers{ static_cast< PIMAGE_DOS_HEADER >( module ) };
         auto* const nt_headers{ reinterpret_cast< PIMAGE_NT_HEADERS >( static_cast< std::uint8_t* >( module ) + dos_headers->e_lfanew ) };
 
         const auto size_of_image{ nt_headers->OptionalHeader.SizeOfImage };
-        const auto pattern_bytes{ pattern_to_byte( signature ) };
+        const auto pattern_bytes{ pattern_to_byte( ) };
         auto* const scan_bytes{ static_cast< std::uint8_t* >( module ) };
 
         const auto size{ pattern_bytes.size( ) };
@@ -64,10 +51,13 @@ namespace utilities {
                     found = false;
                     break;
                 }
-            } if ( found ) return &scan_bytes[ i ];
+            } if ( found ) {
+
+                console::log( "%s => 0x%x ", console_logs::info_log, signature, &scan_bytes[ i ] );
+                return &scan_bytes[ i ];
+            }
         }
 
-        // If you get printed the signature printed in console means its outdated
         throw std::runtime_error( signature + std::string{ " is not a good signature!" } );
     }
 }

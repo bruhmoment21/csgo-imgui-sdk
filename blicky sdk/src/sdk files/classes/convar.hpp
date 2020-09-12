@@ -5,26 +5,25 @@
 #include <type_traits>
 
 enum class cvar_flags : int {
-
 	fcvar_none = 0,
 	fcvar_unregistered = 1 << 0,
-	fcvar_developmentonly = 1 << 1,
-	fcvar_gamedll = 1 << 2,
-	fcvar_clientdll = 1 << 3,
+	fcvar_development_only = 1 << 1,
+	fcvar_game_dll = 1 << 2,
+	fcvar_client_dll = 1 << 3,
 	fcvar_hidden = 1 << 4,
 	fcvar_protected = 1 << 5,
-	fcvar_sponly = 1 << 6,
+	fcvar_sp_only = 1 << 6,
 	fcvar_archive = 1 << 7,
 	fcvar_notify = 1 << 8,
-	fcvar_userinfo = 1 << 9,
-	fcvar_printableonly = 1 << 10,
+	fcvar_user_info = 1 << 9,
+	fcvar_printable_only = 1 << 10,
 	fcvar_unlogged = 1 << 11,
 	fcvar_never_as_string = 1 << 12,
 	fcvar_replicated = 1 << 13,
 	fcvar_cheat = 1 << 14,
 	fcvar_ss = 1 << 15,
 	fcvar_demo = 1 << 16,
-	fcvar_dontrecord = 1 << 17,
+	fcvar_no_record = 1 << 17,
 	fcvar_ss_added = 1 << 18,
 	fcvar_release = 1 << 19,
 	fcvar_reload_materials = 1 << 20,
@@ -40,7 +39,7 @@ enum class cvar_flags : int {
 	fcvar_material_thread_mask = fcvar_reload_materials | fcvar_reload_textures | fcvar_material_system_thread
 };
 
-class convar {
+struct convar {
 public:
 	float get_float( ) {
 		return virtual_method::call_virtual< float, 12 >( this );

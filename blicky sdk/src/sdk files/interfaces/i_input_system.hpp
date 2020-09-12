@@ -1,8 +1,7 @@
 #pragma once
 #include "../virtual_method.hpp"
 
-enum class analog_code_t {
-
+enum class analog_code_t : int {
 	analog_code_invalid = -1,
 	mouse_x = 0,
 	mouse_y,
@@ -11,8 +10,7 @@ enum class analog_code_t {
 	analog_code_last = 10,
 };
 
-enum class button_code_t {
-
+enum class button_code_t : int {
 	button_code_invalid = -1,
 	button_code_none = 0,
 

@@ -12,7 +12,7 @@ public:
 	}
 };
 
-class c_player_inventory {
+class c_player_inventory { // NEEDS REWRITE
 public:
 	c_shared_object_type_cache* get_base_type_cache( ) {
 		static auto fn_find_so_cache = reinterpret_cast< std::uintptr_t( __thiscall* )( std::uintptr_t, std::uint64_t, std::uint64_t, bool ) >( utilities::pattern_scan( "client.dll", "55 8B EC 83 E4 F8 83 EC 1C 0F 10 45 08" ) );
@@ -53,7 +53,7 @@ public:
 		return fn( this, item, a3, a4, a5 );
 	}
 
-	entity_t* get_item_in_loadout( int team, int slot ) {
+	entity_t* get_item_in_loadout( unsigned int team, signed int slot ) {
 		return virtual_method::call_virtual< entity_t*, 8, unsigned int, signed int >( this, team, slot );
 	}
 

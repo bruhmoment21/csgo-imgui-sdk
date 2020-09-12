@@ -2,7 +2,7 @@
 //#include "constants.hpp"								Uncomment when needed
 #include "vec3_t.hpp"
 
-class matrix_3x4 {
+struct matrix_3x4 {
 public:
 	float m[ 3 ][ 4 ];
 
@@ -27,7 +27,7 @@ public:
 	}
 };
 
-class matrix_4x4 { // aka view_matrix
+struct matrix_4x4 { // aka view_matrix
 public:
 	float m[ 4 ][ 4 ];
 

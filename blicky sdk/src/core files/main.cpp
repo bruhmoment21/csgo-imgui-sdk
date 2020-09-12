@@ -3,27 +3,33 @@
 
 #include <thread>
 
-/*static uint32_t alloc_count;
+static uint32_t alloc_count;
 
-void* operator new( size_t size ) {						// Keep track of heap allocations
-	
+void* operator new( size_t size ) {		// Keep track of heap allocations
 	++alloc_count;
-	std::cout << alloc_count << '\n';
 	return malloc( size );
-}*/
+}
 
-DWORD WINAPI StartAddress( LPVOID instance ) {
+DWORD __stdcall StartAddress( LPVOID instance ) {
 
-	utilities::allocate_console( );
+	while ( !GetModuleHandleA( "serverbrowser.dll" ) ) // Checks if CS:GO has been fully loaded.
+		std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+
+	console::allocate( );
 
 	try {
-		interfaces::initialize( );
+		sdk::initialize( );
 		hooks::initialize( );
+
+		console::log( "Cheat has been loaded successfully!", console_logs::successful_log );
 	} catch ( const std::runtime_error& ex ) {
-		std::cout << "Exception: \n\n" << ex.what( ) << '\n';
-		system( "pause" );
+		if ( !sdk::engine->console_opened( ) && config::log_in_csgo ) sdk::engine->cmd_unrestricted( "toggleconsole" );
+		console::log( ex.what( ), console_logs::error_log );
+
 		FreeLibraryAndExitThread( static_cast< HMODULE >( instance ), 1 );
 	}
+
+	console::log( "Heap allocations: %u", console_logs::info_log, alloc_count );
 
 	while ( !GetAsyncKeyState( VK_END ) )
 		std::this_thread::sleep_for( std::chrono::milliseconds( 50 ) );
@@ -31,13 +37,15 @@ DWORD WINAPI StartAddress( LPVOID instance ) {
 	FreeLibraryAndExitThread( static_cast< HMODULE >( instance ), 1 );
 }
 
-BOOL WINAPI DllMain( const HMODULE instance, const DWORD reason, [[maybe_unused]] LPVOID reserved ) {
+BOOL __stdcall DllMain( const HMODULE instance, const DWORD reason, LPVOID reserved ) {
 
 	if ( reason == DLL_PROCESS_ATTACH ) {
+		DisableThreadLibraryCalls( instance );
 		CreateThread( nullptr, NULL, StartAddress, instance, NULL, nullptr );
-	} else if ( reason == DLL_PROCESS_DETACH ) {
+	} else if ( reason == DLL_PROCESS_DETACH && !reserved ) {
 		hooks::release( );
-		utilities::free_console( );
+		console::log( "Cheat has been unloaded successfully!", console_logs::successful_log );
+		console::release( );
 	}
 
 	return TRUE;

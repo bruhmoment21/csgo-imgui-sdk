@@ -24,7 +24,7 @@ enum class client_frame_stage_t : int {
     frame_render_end
 };
 
-enum item_definition_indexes : short {
+enum class item_definition_indexes : short {
 
     weapon_deagle = 1,
     weapon_elite = 2,
@@ -124,17 +124,17 @@ enum item_definition_indexes : short {
     special_agent_b_squadron_officer = 5601,
 };
 
-constexpr bool is_knife( const short i ) noexcept {
-    return i >= weapon_knife_bayonet && i < glove_studded_bloodhound || i == weapon_knife_t || i == weapon_knife;
+constexpr bool is_knife( const item_definition_indexes i ) noexcept {
+    return i >= item_definition_indexes::weapon_knife_bayonet && i < item_definition_indexes::glove_studded_bloodhound || i == item_definition_indexes::weapon_knife_t || i == item_definition_indexes::weapon_knife;
 }
 
-constexpr bool is_custom_agent( const short i ) noexcept {
-    return ( i >= special_agent_ground_rebel && i <= special_agent_muhlik )
-        || ( i >= special_agent_operator && i <= special_agent_slingshot )
-        || ( i >= special_agent_soldier && i <= special_agent_ava )
-        || ( i >= special_agent_3rd_commando_company && i <= special_agent_ricksaw )
-        || ( i >= special_agent_dragomir && i <= special_agent_the_doctor )
-        || ( i == special_agent_b_squadron_officer );
+constexpr bool is_custom_agent( const item_definition_indexes i ) noexcept {
+    return ( i >= item_definition_indexes::special_agent_ground_rebel && i <= item_definition_indexes::special_agent_muhlik )
+        || ( i >= item_definition_indexes::special_agent_operator && i <= item_definition_indexes::special_agent_slingshot )
+        || ( i >= item_definition_indexes::special_agent_soldier && i <= item_definition_indexes::special_agent_ava )
+        || ( i >= item_definition_indexes::special_agent_3rd_commando_company && i <= item_definition_indexes::special_agent_ricksaw )
+        || ( i >= item_definition_indexes::special_agent_dragomir && i <= item_definition_indexes::special_agent_the_doctor )
+        || ( i == item_definition_indexes::special_agent_b_squadron_officer );
 }
 
 class collideable_t {

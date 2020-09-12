@@ -2,7 +2,7 @@
 //#include "constants.hpp"								Uncomment when needed
 #include <cmath>
 
-class vec3_t {
+struct vec3_t {
 public:
 	float x, y, z;
 

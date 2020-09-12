@@ -26,6 +26,10 @@ struct player_info_t {
 
 class iv_engine_client {
 public:
+	bool console_opened( ) {
+		return virtual_method::call_virtual< bool, 11 >( this );
+	}
+	
 	int max_clients( ) { // Always 64.
 		return virtual_method::call_virtual< int, 20 >( this );
 	}
@@ -37,11 +41,12 @@ public:
 	bool is_connected( ) {
 		return virtual_method::call_virtual< bool, 27 >( this );
 	}
-
+	
 	bool connected_and_in_game( ) {
-		if ( is_in_game( ) && is_connected( ) )
-			return true;
+		return is_in_game( ) && is_connected( );
+	}
 
-		return false;
+	void cmd_unrestricted( const char* command ) {
+		return virtual_method::call_virtual< void, 114, const char* >( this, command, false );
 	}
 };

@@ -9,6 +9,9 @@
     <ClCompile Include="src\other files\minhook\hde\hde32.c" />
     <ClCompile Include="src\other files\utilities\utilities.cpp" />
     <ClCompile Include="src\core files\hooks\hooks.cpp" />
+    <ClCompile Include="src\core files\gui\gui.cpp" />
+    <ClCompile Include="src\other files\math\math.cpp" />
+    <ClCompile Include="src\core files\hacks\misc\misc.cpp" />
     <ClCompile Include="src\other files\imgui\imgui.cpp" />
     <ClCompile Include="src\other files\imgui\imgui_demo.cpp" />
     <ClCompile Include="src\other files\imgui\imgui_draw.cpp" />
@@ -16,9 +19,6 @@
     <ClCompile Include="src\other files\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="src\other files\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\other files\imgui\imgui_stdlib.cpp" />
-    <ClCompile Include="src\core files\gui\gui.cpp" />
-    <ClCompile Include="src\other files\math\math.cpp" />
-    <ClCompile Include="src\core files\hacks\misc\misc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\sdk files\sdk.hpp" />
@@ -31,15 +31,6 @@
     <ClInclude Include="src\other files\utilities\utilities.hpp" />
     <ClInclude Include="src\sdk files\interfaces\iv_engine_client.hpp" />
     <ClInclude Include="src\core files\hooks\hooks.hpp" />
-    <ClInclude Include="src\other files\imgui\imconfig.h" />
-    <ClInclude Include="src\other files\imgui\imgui.h" />
-    <ClInclude Include="src\other files\imgui\imgui_impl_dx9.h" />
-    <ClInclude Include="src\other files\imgui\imgui_impl_win32.h" />
-    <ClInclude Include="src\other files\imgui\imgui_internal.h" />
-    <ClInclude Include="src\other files\imgui\imstb_rectpack.h" />
-    <ClInclude Include="src\other files\imgui\imstb_textedit.h" />
-    <ClInclude Include="src\other files\imgui\imstb_truetype.h" />
-    <ClInclude Include="src\other files\imgui\imgui_stdlib.h" />
     <ClInclude Include="src\core files\gui\gui.hpp" />
     <ClInclude Include="src\sdk files\interfaces\i_input_system.hpp" />
     <ClInclude Include="src\sdk files\interfaces\i_surface.hpp" />
@@ -60,6 +51,15 @@
     <ClInclude Include="src\sdk files\interfaces\i_base_client.hpp" />
     <ClInclude Include="src\sdk files\classes\entities.hpp" />
     <ClInclude Include="src\sdk files\netvars\netvar_manager.hpp" />
+    <ClInclude Include="src\other files\imgui\imconfig.h" />
+    <ClInclude Include="src\other files\imgui\imgui.h" />
+    <ClInclude Include="src\other files\imgui\imgui_impl_dx9.h" />
+    <ClInclude Include="src\other files\imgui\imgui_impl_win32.h" />
+    <ClInclude Include="src\other files\imgui\imgui_internal.h" />
+    <ClInclude Include="src\other files\imgui\imstb_rectpack.h" />
+    <ClInclude Include="src\other files\imgui\imstb_textedit.h" />
+    <ClInclude Include="src\other files\imgui\imstb_truetype.h" />
+    <ClInclude Include="src\other files\imgui\imgui_stdlib.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="src\other files\imgui\LICENSE.txt" />

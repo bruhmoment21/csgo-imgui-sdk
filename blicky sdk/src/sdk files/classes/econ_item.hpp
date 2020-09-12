@@ -7,7 +7,6 @@
 #include <cstdint>
 
 enum class item_quality : int {
-
 	item_quality_default,
 	item_quality_genuine,
 	item_quality_vintage,

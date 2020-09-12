@@ -8,7 +8,6 @@
 #include <filesystem>
 
 namespace gui {
-
     void init( ) noexcept {
 
         ImGui::StyleColorsDark( );
@@ -17,7 +16,7 @@ namespace gui {
         style.ScrollbarSize = 13.0f;
         style.WindowTitleAlign = { 0.5f, 0.5f };
         style.Colors[ ImGuiCol_WindowBg ].w = 0.8f;
-        /* uncomment this if you wish to disable anti aliasing (you must uncomment the one from hooks.cpp too)
+        /* Uncomment this if you wish to disable anti aliasing (you must uncomment the one from hooks.cpp too).
         * style.AntiAliasedLines = false;
         * style.AntiAliasedFill = false;
         */
@@ -27,18 +26,17 @@ namespace gui {
         io.LogFilename = nullptr;
         io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
 
-        initialized = true;
-
         if ( PWSTR path_to_fonts; SUCCEEDED( SHGetKnownFolderPath( FOLDERID_Fonts, 0, nullptr, &path_to_fonts ) ) ) {
             
             const std::filesystem::path path{ path_to_fonts };
             CoTaskMemFree( path_to_fonts );
 
-            static constexpr ImWchar ranges[ ]{ 0x0020, 0xFFFF, 0 };
+            static constexpr ImWchar ranges[ 3 ]{ 0x0020, 0xFFFF, 0 };
             ImFontConfig cfg;
             cfg.OversampleV = 3;
 
             verdana = io.Fonts->AddFontFromFileTTF( ( path / "verdana.ttf" ).string( ).c_str( ), 16.0f, &cfg, ranges );
+            initialized = true;
         }
     }
 
@@ -53,7 +51,7 @@ namespace gui {
         ImGui::Checkbox( "Auto Accept", &config::auto_accept );
         if ( ImGui::IsItemHovered( ) )
             ImGui::SetTooltip( "hinnie's method of accepting match (It clicks the button)." );
-
+        
         ImGui::End( );
     }
 }

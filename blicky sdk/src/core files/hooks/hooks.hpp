@@ -7,18 +7,14 @@ class i_base_client_dll; // Forward declare instead of including header when pos
 enum class client_frame_stage_t;
 
 class i_recipient_filter;
-class vec3_t;
+struct vec3_t;
 
 class i_surface;
 
 namespace hooks {
 
-	void initialize( ) noexcept;
+	void initialize( );
 	void release( ) noexcept;
-
-	inline void* get_virtual( void* const class_name, const unsigned int index ) noexcept {
-		return reinterpret_cast< void* >( ( *static_cast< int** >( class_name ) )[ index ] );
-	}
 
 	namespace menu {
 		inline std::add_pointer_t< HRESULT __stdcall( IDirect3DDevice9*, D3DPRESENT_PARAMETERS* ) > reset_original{ nullptr };
@@ -38,12 +34,12 @@ namespace hooks {
 	namespace engine {
 		inline void( __thiscall* emit_sound_original )( void*, i_recipient_filter&, int, int, const char*, unsigned int, const char*, float, int, float, int, int, const vec3_t*, const vec3_t*, void*, bool, float, int, int ){ nullptr };
 	
-		void __stdcall emit_sound( i_recipient_filter& filter, int ent_index, int channel, const char* entry, unsigned int hash, const char* sample, float vol, int seed, float attenuation, int flags, int pitch, const vec3_t* origin, const vec3_t* direction, void* utl_origin, bool update_pos, float sound_time, int speaker_entity, int unk ) noexcept;
+		void __stdcall emit_sound( i_recipient_filter& filter, const int ent_index, const int channel, const char* entry, const unsigned int hash, const char* sample, const float vol, const int seed, const float attenuation, const int flags, const int pitch, const vec3_t* origin, const vec3_t* direction, void* const utl_origin, const bool update_pos, const float sound_time, const int speaker_entity, const int unk ) noexcept;
 	}
 
 	namespace custom_layout_popup_parameters {
 		inline std::add_pointer_t< int __stdcall( int, char*, char* ) > original{ nullptr };
-		int __stdcall hook( int a1, char* popup_file, char* popup_params ) noexcept;
+		int __stdcall hook( const int a1, char* popup_file, char* popup_params ) noexcept;
 	}
 
 	namespace surface {
@@ -53,6 +49,6 @@ namespace hooks {
 
 	namespace sv_cheats {
 		inline std::add_pointer_t< bool __fastcall( void* ) > original{ nullptr };
-		bool __fastcall hook( void* convar ) noexcept;
+		bool __fastcall hook( void* const convar ) noexcept;
 	}
 }
