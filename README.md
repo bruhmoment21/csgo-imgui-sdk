@@ -11,6 +11,7 @@ simple sdk for csgo
 - all features needed for inventory/skin changer/case opener
 - plenty of signatures/interfaces
 - easy config system
+- heap allocations counter
 
 <br/>**cons**:
 - has no rage capability.
