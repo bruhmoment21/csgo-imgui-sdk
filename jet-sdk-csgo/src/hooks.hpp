@@ -18,7 +18,7 @@ namespace hooks
 		inline void(__thiscall* lock_cursor)(void*);
 		inline void(__thiscall* emit_sound)(void*, emit_sound_t);
 		inline bool(__thiscall* dispatch_user_message)(void*, cstrike_user_messages_t, int, int, void*);
-		inline std::add_pointer_t<long __fastcall(void*, void*, int, int, int, int)> perform_screen_overlay;
+		inline std::add_pointer_t<void __fastcall(void*, void*, int, int, int, int)> perform_screen_overlay;
 		inline void(__thiscall* frame_stage_notify)(void*, frame_stage_t);
 		inline std::unique_ptr< recv_prop_hook_t > sequence;
 	}
