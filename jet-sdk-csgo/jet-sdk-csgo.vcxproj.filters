@@ -62,9 +62,6 @@
     <ClCompile Include="src\signatures.cpp">
       <Filter>valve\signatures</Filter>
     </ClCompile>
-    <ClCompile Include="src\utilities.cpp">
-      <Filter>src\utilities</Filter>
-    </ClCompile>
     <ClCompile Include="src\imgui\imgui.cpp">
       <Filter>src\dependencies\imgui</Filter>
     </ClCompile>

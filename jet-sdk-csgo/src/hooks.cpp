@@ -17,7 +17,6 @@
 #include "imgui/imgui_impl_win32.h"
 
 static std::exception exception;
-static c_econ_item_view* opened_crate;
 
 struct emit_sound_t
 {

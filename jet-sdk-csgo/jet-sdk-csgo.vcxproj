@@ -106,7 +106,6 @@
     </ClCompile>
     <ClCompile Include="src\sdk.cpp" />
     <ClCompile Include="src\signatures.cpp" />
-    <ClCompile Include="src\utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\config.hpp" />
