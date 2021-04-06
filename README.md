@@ -12,6 +12,7 @@ simple sdk for csgo
 - plenty of signatures/interfaces
 - easy config system
 - heap allocations counter
+- event listener
 
 <br/>**cons**:
 - has no rage capability.
