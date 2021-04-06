@@ -79,9 +79,9 @@ public:
 
 	c_econ_item_view* find_key_to_open(c_econ_item_view* crate)
 	{
-		for (int i = 0; i < this->get_inventory_items()->get_size(); ++i)
+		for (int i = 0; i < this->get_inventory_items()->size; ++i)
 		{
-			auto* const prop_key = *(this->get_inventory_items()->get_memory().offset_buffer_by_index(i));
+			auto* const prop_key = *(this->get_inventory_items()->memory + i);
 			if (prop_key)
 			{
 				if (prop_key->tool_can_apply_to(crate))

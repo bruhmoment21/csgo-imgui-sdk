@@ -12,13 +12,20 @@ static const std::filesystem::path path_fs = "jet sdk configs";
 template <typename T>
 static void read_value(const nlohmann::json& src, T& dest) noexcept
 {
+	if (src.is_null()) return;
+
 	dest = src.get<T>();
 }
 
 template <typename T>
 static T read_value(const nlohmann::json& src) noexcept
-{	
-	return src.get<T>();
+{
+	if (!src.is_null())
+	{
+		return src.get<T>();
+	}
+
+	return NULL;
 }
 
 template <typename T>
@@ -42,8 +49,12 @@ namespace config
 
 	void update_configs() noexcept
 	{
+		configs.clear();
+
 		for (const auto& entry : std::filesystem::directory_iterator{path_fs})
 		{
+			if (!entry.is_regular_file() || entry.path().extension() != ".json") continue;
+
 			const auto& file_name = entry.path().stem().string();
 			configs.emplace_back(file_name);
 		}

@@ -52,6 +52,9 @@
     <Filter Include="valve\classes">
       <UniqueIdentifier>{476c18eb-2479-4969-9adf-6425f177057d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\math">
+      <UniqueIdentifier>{7ecb7aa8-f3b4-4acc-bcbd-ec854c5f8dcf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\entry.cpp" />
@@ -115,6 +118,9 @@
     </ClCompile>
     <ClCompile Include="src\imgui\imgui_demo.cpp">
       <Filter>src\dependencies\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\math.cpp">
+      <Filter>src\math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -250,6 +256,9 @@
     </ClInclude>
     <ClInclude Include="src\events.hpp">
       <Filter>src\features</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math.hpp">
+      <Filter>src\math</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

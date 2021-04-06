@@ -22,10 +22,7 @@ class c_panorama_ui_engine
 public:
 	void update_inventory()
 	{
-		static const auto& address = signatures::update_inventory_address;
-		static const auto fn_send = reinterpret_cast<int(__stdcall*)()>(*reinterpret_cast<std::uintptr_t*>(address + 1) + address + 5);
-
-		fn_send();
+		signatures::fn_update_inventory();
 	}
 
 	c_ui_engine* access_ui_engine()

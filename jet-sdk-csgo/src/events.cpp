@@ -20,7 +20,7 @@ void event_listener_t::setup() noexcept
 		if (const auto desc = signatures::fn_get_event_descriptor(sdk::event_manager, "player_death", nullptr))
 		{
 			auto& listeners = desc->listeners;
-			std::swap(listeners[0], listeners[listeners.get_size() - 1]);
+			std::swap(listeners[0], listeners[listeners.size - 1]);
 		}
 	}
 }

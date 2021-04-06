@@ -4,13 +4,9 @@
 #include "utilities.hpp"
 
 #include "i_base_client.hpp"
+#include "math.hpp"
 
 class c_econ_item_view;
-
-struct vec3_t
-{
-
-};
 
 inline constexpr bool is_knife(const short i) noexcept
 {

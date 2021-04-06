@@ -25,7 +25,6 @@ namespace signatures
 	inline std::uint8_t* delayed_lobby; // https://www.unknowncheats.me/forum/counterstrike-global-offensive/443148-invite-cooldown-partly-clientsided.html
 	inline std::uint8_t* fake_prime; // "17 F6 40 14 10" - 1
 	inline std::uintptr_t client_system; // "8B 0D ? ? ? ? 6A 00 83 EC 10" + 2
-	inline std::byte* update_inventory_address; // "E8 ? ? ? ? 83 C4 04 80 BF ? ? ? ? ? 74 0C"
 	inline std::uintptr_t local_inventory_offset; // "8B 8F ? ? ? ? 0F B7 C0 50" + 2
 	inline std::uintptr_t inventory_offset; // "8D 9E ? ? ? ? 8B 0B" + 2
 	inline cs_inventory_manager* inventory_manager; // "B9 ? ? ? ? 8D 44 24 10 89 54 24 14" + 1
@@ -51,6 +50,9 @@ namespace signatures
 
 	using fn_get_crate_series_by_id_t = int(__thiscall*)(std::uintptr_t, int*);
 	inline fn_get_crate_series_by_id_t fn_get_crate_series_by_id; // "55 8B EC 8B 45 08 56 57 8B 30 8B 41 10 83 F8 FF 74 1E 8B 79 04 8D 0C 40 8B 54 CF 10 3B D6 7E 05"
+
+	using fn_update_inventory_t = int(__stdcall*)();
+	inline fn_update_inventory_t fn_update_inventory; // "E8 ? ? ? ? 83 C4 04 80 BF ? ? ? ? ? 74 0C" + 1 [relative]
 
 	using fn_clear_inventory_image_rgba_t = int* (__thiscall*)(void*);
 	inline fn_clear_inventory_image_rgba_t fn_clear_inventory_image_rgba; // "55 8B EC 81 EC ? ? ? ? 57 8B F9 C7 47"

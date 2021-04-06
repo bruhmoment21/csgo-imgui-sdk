@@ -5,8 +5,8 @@
 class game_event_descriptor_t
 {
 public:
-	int	eventid;
-	int elementIndex;
+	int	event_id;
+	int element_index;
 	void* keys;
 	c_utl_vector<void*> listeners;
 };

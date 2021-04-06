@@ -31,8 +31,8 @@ struct emit_sound_t
 	float attenuation;
 	int flags;
 	int pitch;
-	const void* origin; // replace with vec3_t
-	const void* direction; // replace with vec3_t
+	const vec3_t* origin;
+	const vec3_t* direction;
 	void* utl_origin;
 	bool update_pos;
 	float sound_time;
@@ -79,7 +79,6 @@ namespace hooks
 			auto* const lock_cursor_target = utilities::get_virtual(sdk::surface, 67);
 			auto* const emit_sound_target = utilities::get_virtual(sdk::engine_sound, 5);
 			auto* const dispatch_user_message_target = utilities::get_virtual(sdk::client, 38);
-			auto* const perform_screen_overlay_target = signatures::fn_perform_screen_overlay;
 			auto* const frame_stage_notify_target = utilities::get_virtual(sdk::client, 37);
 
 			MH_Initialize();
@@ -89,7 +88,7 @@ namespace hooks
 			MH_CreateHookSafe(lock_cursor_target, &lock_cursor, &original::lock_cursor, GET_VARIABLE_NAME(lock_cursor));
 			MH_CreateHookSafe(emit_sound_target, &emit_sound, &original::emit_sound, GET_VARIABLE_NAME(emit_sound));
 			MH_CreateHookSafe(dispatch_user_message_target, &dispatch_user_message, &original::dispatch_user_message, GET_VARIABLE_NAME(dispatch_user_message));
-			MH_CreateHookSafe(perform_screen_overlay_target, &perform_screen_overlay, &original::perform_screen_overlay, GET_VARIABLE_NAME(perform_screen_overlay));
+			MH_CreateHookSafe(signatures::fn_perform_screen_overlay, &perform_screen_overlay, &original::perform_screen_overlay, GET_VARIABLE_NAME(perform_screen_overlay));
 			MH_CreateHookSafe(frame_stage_notify_target, &frame_stage_notify, &original::frame_stage_notify, GET_VARIABLE_NAME(frame_stage_notify));
 
 			MH_EnableHook(nullptr);

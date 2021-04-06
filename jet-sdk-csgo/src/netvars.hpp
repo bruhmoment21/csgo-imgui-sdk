@@ -32,9 +32,9 @@ namespace netvar_manager
 	[[nodiscard]] inline std::add_lvalue_reference_t< T > get_netvar(const char* table, const char* prop, void* const class_base, const std::uintptr_t offset = 0) noexcept
 	{
 		const auto address = netvar_manager::get_offset(fnv::hash(table), fnv::hash(prop));
-		
-		const auto _this = reinterpret_cast<std::uintptr_t>(class_base);
-		return *reinterpret_cast<std::add_pointer_t< T >>(_this + address + offset);
+
+		const auto _this = reinterpret_cast<std::uintptr_t>(class_base) + address + offset;
+		return *reinterpret_cast<std::add_pointer_t< T >>(_this);
 	}
 
 	template < typename T >
@@ -42,7 +42,7 @@ namespace netvar_manager
 	{
 		const auto address = netvar_manager::get_offset(fnv::hash(table), fnv::hash(prop));
 
-		const auto _this = reinterpret_cast<std::uintptr_t>(class_base);
-		return reinterpret_cast<std::add_pointer_t< T >>(_this + address + offset);
+		const auto _this = reinterpret_cast<std::uintptr_t>(class_base) + address + offset;
+		return reinterpret_cast<std::add_pointer_t< T >>(_this);
 	}
 }

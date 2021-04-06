@@ -5,7 +5,6 @@
 struct emit_sound_t;
 enum class cstrike_user_messages_t : int;
 
-class c_econ_item_view;
 enum class frame_stage_t;
 
 namespace hooks
