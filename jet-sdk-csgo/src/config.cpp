@@ -25,7 +25,7 @@ static T read_value(const nlohmann::json& src) noexcept
 		return src.get<T>();
 	}
 
-	return NULL;
+	return T{};
 }
 
 template <typename T>
