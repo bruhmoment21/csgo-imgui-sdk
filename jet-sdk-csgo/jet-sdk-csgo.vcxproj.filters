@@ -260,5 +260,41 @@
     <ClInclude Include="src\math.hpp">
       <Filter>src\math</Filter>
     </ClInclude>
+    <ClInclude Include="src\i_base_file_system.hpp">
+      <Filter>valve\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\i_match_framework.hpp">
+      <Filter>valve\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\i_material_system.hpp">
+      <Filter>valve\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\i_mem_alloc.hpp">
+      <Filter>valve\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_key_values.hpp">
+      <Filter>valve\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\i_game_ui.hpp">
+      <Filter>valve\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\steam api\i_steam_client.hpp">
+      <Filter>valve\steam</Filter>
+    </ClInclude>
+    <ClInclude Include="src\steam api\i_steam_coordinator.hpp">
+      <Filter>valve\steam</Filter>
+    </ClInclude>
+    <ClInclude Include="src\steam api\i_steam_matchmaking.hpp">
+      <Filter>valve\steam</Filter>
+    </ClInclude>
+    <ClInclude Include="src\steam api\i_steam_user.hpp">
+      <Filter>valve\steam</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_materials.hpp">
+      <Filter>valve\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\i_app_system.hpp">
+      <Filter>valve\interfaces</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,14 +1,18 @@
 #pragma once
 
+#include "i_steam_coordinator.hpp"
+#include "i_steam_matchmaking.hpp"
 #include "i_steam_user_stats.hpp"
+#include "i_steam_client.hpp"
+#include "i_steam_user.hpp"
 
 struct steam_api_context_t
 {
-	void* steam_client;
-	void* steam_user;
+	i_steam_client* steam_client;
+	i_steam_user* steam_user;
 	void* steam_friends;
 	void* steam_utils;
-	void* steam_matchmaking;
+	i_steam_matchmaking* steam_matchmaking;
 	void* steam_game_search;
 	i_steam_user_stats* steam_user_stats;
 	void* steam_apps;

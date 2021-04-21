@@ -2,6 +2,7 @@
 #include "config.hpp"
 
 #include "signatures.hpp"
+#include "utilities.hpp"
 
 namespace misc
 {
@@ -13,12 +14,8 @@ namespace misc
 		{
 			last_state = config::bypass_invite_cooldown;
 
-			if (DWORD old_protect; VirtualProtect(signatures::delayed_lobby, 1, PAGE_EXECUTE_READWRITE, &old_protect))
-			{
-				static constexpr std::uint8_t patch[2]{0x74, 0xEB};
-				*signatures::delayed_lobby = patch[config::bypass_invite_cooldown];
-				VirtualProtect(signatures::delayed_lobby, 1, old_protect, nullptr);
-			}
+			static constexpr std::uint8_t patch[2]{0x74, 0xEB};
+			utilities::patch_at_address(signatures::delayed_lobby, &(patch[config::bypass_invite_cooldown]), 1);
 		}
 	}
 
@@ -30,12 +27,8 @@ namespace misc
 		{
 			last_state = config::fake_prime;
 
-			if (DWORD old_protect; VirtualProtect(signatures::fake_prime, 1, PAGE_EXECUTE_READWRITE, &old_protect))
-			{
-				static constexpr std::uint8_t patch[2]{0x74, 0xEB};
-				*signatures::fake_prime = patch[config::fake_prime];
-				VirtualProtect(signatures::fake_prime, 1, old_protect, nullptr);
-			}
+			static constexpr std::uint8_t patch[2]{0x74, 0xEB};
+			utilities::patch_at_address(signatures::fake_prime, &(patch[config::fake_prime]), 1);
 		}
 	}
 }

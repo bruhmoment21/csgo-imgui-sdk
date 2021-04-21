@@ -35,4 +35,17 @@ namespace utilities
 	{
 		return reinterpret_cast<void*>((*static_cast<int**>(class_base))[index]);
 	}
+
+	// Bytepatching
+	inline void patch_at_address(std::uint8_t* const address, const std::uint8_t* patched_address, const std::size_t size) // Thanks cristeigabriel!
+	{
+		//  Old protection state
+		DWORD new_protect, old_protect;
+		//  Remove write protection
+		if (!VirtualProtect(address, size, PAGE_EXECUTE_READWRITE, &new_protect)) throw std::runtime_error("Failed making bytes writable");
+		//  Patch bytes
+		memcpy_s(address, size, patched_address, size);
+		//  Restore old protection state
+		if (!VirtualProtect(address, size, new_protect, &old_protect)) throw std::runtime_error("Failed restoring bytes writability state");
+	}
 }

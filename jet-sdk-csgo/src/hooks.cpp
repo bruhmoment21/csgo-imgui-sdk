@@ -16,8 +16,6 @@
 #include "imgui/imgui_impl_dx9.h"
 #include "imgui/imgui_impl_win32.h"
 
-static std::exception exception;
-
 struct emit_sound_t
 {
 	void* filter;
@@ -40,14 +38,6 @@ struct emit_sound_t
 	void* sound_parameters;
 };
 
-static void show_messagebox() // MessageBox won't work if not created from another thread.
-{
-	std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
-	MessageBoxA(nullptr, exception.what(), "Exception caught!", MB_OK | MB_ICONERROR);
-	hooks::release();
-}
-
 static void MH_CreateHookSafe(void* const target, void* const detour, void* const original, const char* detour_name)
 {
 	if (MH_CreateHook(static_cast<LPVOID>(target), static_cast<LPVOID>(detour), static_cast<LPVOID*>(original)) != MH_OK)
@@ -66,41 +56,31 @@ namespace hooks
 	{
 		utilities::allocate_console();
 
-		try
-		{
-			signatures::initialize();
-			sdk::initialize();
-			event_listener.setup();
+		signatures::initialize();
+		config::create_directory();
+		sdk::initialize();
+		event_listener.setup();
 
-			original::wnd_proc = reinterpret_cast<decltype(original::wnd_proc)>(SetWindowLongA(FindWindowA("Valve001", nullptr), GWL_WNDPROC, reinterpret_cast<LONG>(wnd_proc)));
+		original::wnd_proc = reinterpret_cast<decltype(original::wnd_proc)>(SetWindowLongA(FindWindowA("Valve001", nullptr), GWL_WNDPROC, reinterpret_cast<LONG>(wnd_proc)));
 
-			auto* const reset_target = utilities::get_virtual(signatures::directx, 16);
-			auto* const present_target = utilities::get_virtual(signatures::directx, 17);
-			auto* const lock_cursor_target = utilities::get_virtual(sdk::surface, 67);
-			auto* const emit_sound_target = utilities::get_virtual(sdk::engine_sound, 5);
-			auto* const dispatch_user_message_target = utilities::get_virtual(sdk::client, 38);
-			auto* const frame_stage_notify_target = utilities::get_virtual(sdk::client, 37);
+		auto* const reset_target = utilities::get_virtual(signatures::directx, 16);
+		auto* const present_target = utilities::get_virtual(signatures::directx, 17);
+		auto* const lock_cursor_target = utilities::get_virtual(sdk::surface, 67);
+		auto* const emit_sound_target = utilities::get_virtual(sdk::engine_sound, 5);
+		auto* const dispatch_user_message_target = utilities::get_virtual(sdk::client, 38);
+		auto* const frame_stage_notify_target = utilities::get_virtual(sdk::client, 37);
 
-			MH_Initialize();
+		MH_Initialize();
 
-			MH_CreateHookSafe(reset_target, &reset, &original::reset, GET_VARIABLE_NAME(reset));
-			MH_CreateHookSafe(present_target, &present, &original::present, GET_VARIABLE_NAME(present));
-			MH_CreateHookSafe(lock_cursor_target, &lock_cursor, &original::lock_cursor, GET_VARIABLE_NAME(lock_cursor));
-			MH_CreateHookSafe(emit_sound_target, &emit_sound, &original::emit_sound, GET_VARIABLE_NAME(emit_sound));
-			MH_CreateHookSafe(dispatch_user_message_target, &dispatch_user_message, &original::dispatch_user_message, GET_VARIABLE_NAME(dispatch_user_message));
-			MH_CreateHookSafe(signatures::fn_perform_screen_overlay, &perform_screen_overlay, &original::perform_screen_overlay, GET_VARIABLE_NAME(perform_screen_overlay));
-			MH_CreateHookSafe(frame_stage_notify_target, &frame_stage_notify, &original::frame_stage_notify, GET_VARIABLE_NAME(frame_stage_notify));
+		MH_CreateHookSafe(reset_target, &reset, &original::reset, "reset");
+		MH_CreateHookSafe(present_target, &present, &original::present, "present");
+		MH_CreateHookSafe(lock_cursor_target, &lock_cursor, &original::lock_cursor, "lock_cursor");
+		MH_CreateHookSafe(emit_sound_target, &emit_sound, &original::emit_sound, "emit_sound");
+		MH_CreateHookSafe(dispatch_user_message_target, &dispatch_user_message, &original::dispatch_user_message, "dispatch_user_message");
+		MH_CreateHookSafe(signatures::fn_perform_screen_overlay, &perform_screen_overlay, &original::perform_screen_overlay, "perform_screen_overlay");
+		MH_CreateHookSafe(frame_stage_notify_target, &frame_stage_notify, &original::frame_stage_notify, "frame_stage_notify");
 
-			MH_EnableHook(nullptr);
-		} catch (const std::exception& ex)
-		{
-			exception = ex;
-
-			if (auto* const exception_thread = CreateThread(nullptr, 0, LPTHREAD_START_ROUTINE(show_messagebox), nullptr, 0, nullptr))
-			{
-				CloseHandle(exception_thread);
-			}
-		}
+		MH_EnableHook(nullptr);
 	}
 
 	void release() noexcept // Call from another thread.
@@ -138,8 +118,6 @@ namespace hooks
 	{
 		[[maybe_unused]] static const auto once = [](const HWND& window) noexcept
 		{
-			config::create_directory();
-
 			ImGui::CreateContext();
 			ImGui_ImplWin32_Init(window);
 			menu::initialize();

@@ -1,7 +1,5 @@
 #pragma once
 
-#define GET_VARIABLE_NAME(var) (#var)
-
 #include <filesystem>
 #include <algorithm>
 #include <memory.h>

@@ -1,5 +1,8 @@
 #pragma once
 
+class game_rules_t;
+class player_resource_t;
+
 class c_econ_item;
 class c_econ_item_view;
 class c_econ_item_definition;
@@ -11,6 +14,8 @@ class cs_inventory_manager;
 
 class game_event_descriptor_t;
 class i_game_event_manager;
+
+class c_key_values;
 
 namespace signatures
 {
@@ -24,13 +29,20 @@ namespace signatures
 
 	inline std::uint8_t* delayed_lobby; // https://www.unknowncheats.me/forum/counterstrike-global-offensive/443148-invite-cooldown-partly-clientsided.html
 	inline std::uint8_t* fake_prime; // "17 F6 40 14 10" - 1
-	inline std::uintptr_t client_system; // "8B 0D ? ? ? ? 6A 00 83 EC 10" + 2
+	inline std::uintptr_t client_system; // "8B 0D ? ? ? ? 6A 00 83 EC 10" + 2	
 	inline std::uintptr_t local_inventory_offset; // "8B 8F ? ? ? ? 0F B7 C0 50" + 2
 	inline std::uintptr_t inventory_offset; // "8D 9E ? ? ? ? 8B 0B" + 2
 	inline cs_inventory_manager* inventory_manager; // "B9 ? ? ? ? 8D 44 24 10 89 54 24 14" + 1
 	inline std::uintptr_t failed_to_open_crate; // "68 ? ? ? ? 8B 01 8B 80 ? ? ? ? FF D0 84 C0 74 1A 8B 35 ? ? ? ? 8B D3 33 C9 8B 3E E8 ? ? ? ? 50 8B CE FF 97 ? ? ? ? 5F 5E B0 01 5B 8B E5 5D C2 04 ?" + 1
 	inline std::uintptr_t item_customization_notification; // "68 ? ? ? ? 8B 80 ? ? ? ? FF D0 84 C0 74 28" + 1
 	inline std::byte* loot_list_items_count_return_address; // "85 C0 0F 84 ? ? ? ? 8B C8 E8 ? ? ? ? 52 50 E8 ? ? ? ? 83 C4 08 89 44 24 14 85 C0 0F 84 ? ? ? ? 8B 0D"
+	inline std::uint8_t* is_loadout_allowed; // "8B 40 6C FF D0 ? ? ? ? ? ? 5F" + 5
+	inline std::byte* accumulate_layers_return_address; // "84 C0 75 0D F6 87"
+	inline std::byte* setup_velocity_return_address; // "84 C0 75 38 8B 0D ? ? ? ? 8B 01 8B 80 ? ? ? ? FF D0"
+	inline std::uintptr_t hud; // "B9 ? ? ? ? E8 ? ? ? ? 8B 5D 08" + 1
+	inline game_rules_t** game_rules; // "8B 0D ? ? ? ? 85 C9 74 1A 8A 41 7D" + 2
+	inline player_resource_t** player_resource; // "8B 3D ? ? ? ? 85 FF 0F 84 ? ? ? ? 81 C7" + 2
+	inline std::uintptr_t view_matrix; // ["0F 10 05 ? ? ? ? 8D 85 ? ? ? ? B9" + 3] + 176
 
 	// Functions
 	using fn_add_econ_item_t = bool(__thiscall*)(void*, c_econ_item*, int, int, char);
@@ -63,8 +75,8 @@ namespace signatures
 	using fn_get_static_data_t = c_econ_item_definition * (__thiscall*)(void*);
 	inline fn_get_static_data_t fn_get_static_data; // "55 8B EC 51 53 8B D9 8B 0D ? ? ? ? 56 57 8B B9"
 
-	using fn_tool_can_apply_to_t = c_econ_item_definition * (__thiscall*)(void*);
-	inline fn_tool_can_apply_to_t fn_tool_can_apply_to; // "55 8B EC 83 EC 18 53 56 8B F1 57 8B FA"
+	// Doesn't need a typedef because we are calling it with assembly. c_econ_item_definition * (__thiscall*)(void*);
+	inline void* fn_tool_can_apply_to; // "55 8B EC 83 EC 18 53 56 8B F1 57 8B FA"
 
 	using fn_create_econ_item_t = c_econ_item * (__stdcall*)();
 	inline fn_create_econ_item_t fn_create_econ_item; // "A1 ? ? ? ? 6A 38 8B 08 8B 01 FF 50 04 85 C0 74 07 8B C8 E9 ? ? ? ? 33 C0 C3 ? ? ? ? A1 ? ? ? ?"
@@ -91,4 +103,41 @@ namespace signatures
 	inline fn_get_event_descriptor_t fn_get_event_descriptor; // "E8 ? ? ? ? 8B D8 85 DB 75 27" + 1 [relative]
 
 	inline void* fn_perform_screen_overlay; // "55 8b ec 51 a1 ? ? ? ? 53 56 8b d9"
+
+	inline void* fn_render_view; // "55 8B EC 83 E4 C0 81 EC ? ? ? ? 53 56 57 8B F9 89 7C 24 44"
+
+	inline void* fn_warning; // "Warning" exported in tier0.dll
+
+	using fn_find_hud_element_t = int* (__thiscall*)(std::uintptr_t, const char*);
+	inline fn_find_hud_element_t fn_find_hud_element; // temp + 5 [relative]
+
+	using fn_clear_hud_weapon_t = int(__thiscall*)(int*, int);
+	inline fn_clear_hud_weapon_t fn_clear_hud_weapon; // "55 8B EC 51 53 56 8B 75 08 8B D9 57 6B FE 2C"
+
+	namespace key_values
+	{
+		using fn_init_t = void(__thiscall*)(void*, const char*);
+		inline fn_init_t fn_init; // "55 8B EC 51 33 C0 C7 45"
+
+		using fn_load_from_buffer_t = void(__thiscall*)(void*, const char*, const char*, void*, const char*, void*, void*);
+		inline fn_load_from_buffer_t fn_load_from_buffer; // "55 8B EC 83 E4 F8 83 EC 34 53 8B 5D 0C 89"
+
+		using fn_find_key_t = c_key_values * (__thiscall*)(void*, const char*, bool);
+		inline fn_find_key_t fn_find_key; // "55 8B EC 83 EC 1C 53 8B D9 85 DB"
+
+		using fn_set_string_t = void(__thiscall*)(void*, const char*);
+		inline fn_set_string_t fn_set_string; // "55 8B EC A1 ? ? ? ? 53 56 57 8B F9 8B 08 8B 01"
+
+		using fn_get_int_t = int(__thiscall*)(void*, const char*, int);
+		inline fn_get_int_t fn_get_int; // "55 8B EC 6A ? FF 75 08 E8 ? ? ? ? 85 C0 74 45"
+
+		using fn_get_string_t = const char* (__thiscall*)(void*, const char*, const char*);
+		inline fn_get_string_t fn_get_string; // "55 8B EC 83 E4 C0 81 EC ? ? ? ? 53 8B 5D 08"
+
+		using fn_save_to_file_t = bool(__thiscall*)(void*, void*, const char*, const char*, bool);
+		inline fn_save_to_file_t fn_save_to_file; // "E8 ? ? ? ? 8B 8E ? ? ? ? 8D 45 BC" + 1 [relative]
+	}
+
+	using fn_get_sequence_activity_t = int(__fastcall*)(void*, void*, int);
+	inline fn_get_sequence_activity_t fn_get_sequence_activity; // "55 8B EC 53 8B 5D 08 56 8B F1 83"
 }
