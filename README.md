@@ -13,6 +13,8 @@ simple sdk for csgo
 - easy config system
 - heap allocations counter
 - event listener
+- precompiled headers
+- partial steam api included
 
 <br/>**cons**:
 - has no rage capability.
