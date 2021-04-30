@@ -1,6 +1,10 @@
 #include "pch.hpp"
 #include "math.hpp"
 
+#include "imgui/imgui.h"
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include "imgui/imgui_internal.h"
+
 static void sin_cos(const float r, float& s, float& c) noexcept
 {
 	s = sin(r);
@@ -34,5 +38,19 @@ namespace math
 		sin_cos(constants_t::degree_to_radians(angles.yaw), sy, cy);
 
 		return {cp * cy, cp * sy, -sp};
+	}
+
+	bool world_to_screen(const vec3_t& origin, ImVec2& screen) noexcept
+	{
+		const auto w = matrix.m[3][0] * origin.x + matrix.m[3][1] * origin.y + matrix.m[3][2] * origin.z + matrix.m[3][3];
+		if (w < 0.001f) return false;
+
+		screen = ImGui::GetIO().DisplaySize / 2.0f;
+		screen.x *= 1.0f + (matrix.m[0][0] * origin.x + matrix.m[0][1] * origin.y + matrix.m[0][2] * origin.z + matrix.m[0][3]) / w;
+		screen.y *= 1.0f - (matrix.m[1][0] * origin.x + matrix.m[1][1] * origin.y + matrix.m[1][2] * origin.z + matrix.m[1][3]) / w;
+
+		screen = ImFloor(screen);
+
+		return true;
 	}
 }

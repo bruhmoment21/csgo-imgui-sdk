@@ -6,7 +6,7 @@
 
 namespace misc
 {
-	void bypass_invite_cooldown() noexcept
+	void bypass_invite_cooldown()
 	{
 		static bool last_state = false;
 
@@ -19,7 +19,7 @@ namespace misc
 		}
 	}
 
-	void fake_prime() noexcept
+	void fake_prime()
 	{
 		static bool last_state = false;
 

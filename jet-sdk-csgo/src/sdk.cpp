@@ -30,7 +30,7 @@ static void get_interface(T& value, const char* module_name, const std::string_v
 		return **reinterpret_cast<interface_register_t***>(create_interface + 6);
 	};
 
-	for (auto current_register = get_register_list(); current_register; current_register = current_register->next)
+	for (auto* current_register = get_register_list(); current_register; current_register = current_register->next)
 	{
 		// found needed interface
 		if ((!std::string_view{current_register->name}.compare(0U, name.length(), name) && std::atoi(current_register->name + name.length()) > 0)

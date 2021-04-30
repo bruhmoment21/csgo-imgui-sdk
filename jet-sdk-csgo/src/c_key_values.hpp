@@ -12,9 +12,9 @@ public:
 		signatures::key_values::fn_init(this, key_name);
 	}
 
-	void load_from_buffer(const char* resource_name, const char* buf, void* file_sys = nullptr, const char* path_id = nullptr, void* eval_sym_proc = nullptr, void* unk = nullptr)
+	void load_from_buffer(const char* resource_name, const char* buf, void* file_system = nullptr, const char* path_id = nullptr, void* eval_sym_proc = nullptr, void* unk = nullptr)
 	{
-		signatures::key_values::fn_load_from_buffer(this, resource_name, buf, file_sys, path_id, eval_sym_proc, unk);
+		signatures::key_values::fn_load_from_buffer(this, resource_name, buf, file_system, path_id, eval_sym_proc, unk);
 	}
 
 	c_key_values* find_key(const char* name, bool create = false)

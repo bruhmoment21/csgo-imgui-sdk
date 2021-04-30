@@ -272,9 +272,6 @@
     <ClInclude Include="src\i_mem_alloc.hpp">
       <Filter>valve\interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="src\c_key_values.hpp">
-      <Filter>valve\interfaces</Filter>
-    </ClInclude>
     <ClInclude Include="src\i_game_ui.hpp">
       <Filter>valve\interfaces</Filter>
     </ClInclude>
@@ -295,6 +292,9 @@
     </ClInclude>
     <ClInclude Include="src\i_app_system.hpp">
       <Filter>valve\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_key_values.hpp">
+      <Filter>valve\classes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

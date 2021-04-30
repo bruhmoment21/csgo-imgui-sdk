@@ -20,12 +20,9 @@ static void read_value(const nlohmann::json& src, T& dest) noexcept
 template <typename T>
 static T read_value(const nlohmann::json& src) noexcept
 {
-	if (!src.is_null())
-	{
-		return src.get<T>();
-	}
+	if (src.is_null()) return T{};
 
-	return T{};
+	return src.get<T>();
 }
 
 template <typename T>

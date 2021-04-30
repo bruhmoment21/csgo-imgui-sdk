@@ -42,7 +42,6 @@ namespace signatures
 	inline std::uintptr_t hud; // "B9 ? ? ? ? E8 ? ? ? ? 8B 5D 08" + 1
 	inline game_rules_t** game_rules; // "8B 0D ? ? ? ? 85 C9 74 1A 8A 41 7D" + 2
 	inline player_resource_t** player_resource; // "8B 3D ? ? ? ? 85 FF 0F 84 ? ? ? ? 81 C7" + 2
-	inline std::uintptr_t view_matrix; // ["0F 10 05 ? ? ? ? 8D 85 ? ? ? ? B9" + 3] + 176
 
 	// Functions
 	using fn_add_econ_item_t = bool(__thiscall*)(void*, c_econ_item*, int, int, char);
@@ -140,4 +139,13 @@ namespace signatures
 
 	using fn_get_sequence_activity_t = int(__fastcall*)(void*, void*, int);
 	inline fn_get_sequence_activity_t fn_get_sequence_activity; // "55 8B EC 53 8B 5D 08 56 8B F1 83"
+
+	inline void* fn_static_prop_init; // E8 ? ? ? ? 8B 0F 03 CE + 1 [relative]
+
+	inline void* fn_get_color_modulation; // "55 8B EC 83 EC ? 56 8B F1 8A 46"
+
+	inline void* fn_pre_render_3d_skybox_world; // "83 F9 01 8B 0D ? ? ? ?"
+
+	using fn_set_skybox_t = void(__fastcall*)(const char*);
+	inline fn_set_skybox_t fn_set_skybox; // "55 8B EC 81 EC ? ? ? ? 56 57 8B F9 C7 45"
 }

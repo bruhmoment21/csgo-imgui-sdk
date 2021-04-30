@@ -7,12 +7,12 @@ struct module_t
 {
 	module_t() = default;
 
-	module_t(const char* module_name)
+	explicit module_t(const char* module_name)
 	{
-		if (!module_name) throw std::runtime_error("module_name was nullptr");
+		if (!module_name) throw std::runtime_error{"module_name was nullptr"};
 
 		const HMODULE handle = GetModuleHandleA(module_name);
-		if (!handle) throw std::runtime_error("[module_t] Couldn't get " + std::string{module_name} + " handle");
+		if (!handle) throw std::runtime_error{"[module_t] Couldn't get " + std::string{module_name} + " handle"};
 
 		this->handle = handle;
 		this->dos_headers = reinterpret_cast<PIMAGE_DOS_HEADER>(handle);
@@ -35,7 +35,7 @@ struct module_t
 
 static std::unordered_map<std::uint32_t, module_t> modules;
 
-template <std::size_t size> // Thanks criseigabriel!
+template <std::size_t size> // Thanks cristeigabriel!
 static std::byte* pattern_scan(const char* module_name, const int(&pattern)[size])
 {
 	/*
@@ -77,14 +77,14 @@ static std::byte* pattern_scan(const char* module_name, const int(&pattern)[size
 			{
 				if (pattern[i])
 				{
-					std::cout << ' ' << std::setfill('0') << std::setw(2) << std::hex << std::uppercase << pattern[i] << std::dec;
+					std::cout << ' ' << std::setfill('0') << std::setw(2) << std::hex << std::uppercase << pattern[i];
 				} else
 				{
 					std::cout << " ?";
 				}
 			}
 
-			std::cout << " -> 0x" << reinterpret_cast<std::byte*>(&current_module.scan_bytes[i]) << '\n';
+			std::cout << " -> 0x" << result_address << '\n' << std::dec;
 #endif
 			return result_address;
 		}
@@ -153,7 +153,9 @@ namespace signatures
 		setup_velocity_return_address = reinterpret_cast<decltype(setup_velocity_return_address)>(pattern_scan("client.dll",
 			{0x84, 0xC0, 0x75, 0x38, 0x8B, 0x0D, 0, 0, 0, 0, 0x8B, 0x01, 0x8B, 0x80, 0, 0, 0, 0, 0xFF, 0xD0}));
 
-		auto* const temp = reinterpret_cast<std::uintptr_t*>(pattern_scan("client.dll", {0xB9, 0, 0, 0, 0, 0xE8, 0, 0, 0, 0, 0x8B, 0x5D, 0x08}) + 1);
+		auto* const temp = reinterpret_cast<std::uintptr_t*>(pattern_scan("client.dll", 
+			{0xB9, 0, 0, 0, 0, 0xE8, 0, 0, 0, 0, 0x8B, 0x5D, 0x08}) + 1);
+
 		hud = *temp;
 
 		game_rules = *reinterpret_cast<decltype(game_rules)*>(pattern_scan("client.dll",
@@ -161,9 +163,6 @@ namespace signatures
 
 		player_resource = *reinterpret_cast<decltype(player_resource)*>(pattern_scan("client.dll",
 			{0x8B, 0x3D, 0, 0, 0, 0, 0x85, 0xFF, 0x0F, 0x84, 0, 0, 0, 0, 0x81, 0xC7}) + 2);
-
-		view_matrix = *reinterpret_cast<decltype(view_matrix)*>(pattern_scan("client.dll",
-			{0x0F, 0x10, 0x05, 0, 0, 0, 0, 0x8D, 0x85, 0, 0, 0, 0, 0xB9}) + 3) + 176;
 
 		// Functions
 		fn_add_econ_item = reinterpret_cast<decltype(fn_add_econ_item)>(pattern_scan("client.dll",
@@ -266,5 +265,17 @@ namespace signatures
 
 		fn_get_sequence_activity = reinterpret_cast<decltype(fn_get_sequence_activity)>(pattern_scan("client.dll",
 			{0x55, 0x8B, 0xEC, 0x53, 0x8B, 0x5D, 0x08, 0x56, 0x8B, 0xF1, 0x83}));
+
+		fn_static_prop_init = reinterpret_cast<decltype(fn_static_prop_init)>(relative_to_absolute(pattern_scan("engine.dll",
+			{0xE8, 0, 0, 0, 0, 0x8B, 0x0F, 0x03, 0xCE}) + 1));
+
+		fn_get_color_modulation = reinterpret_cast<decltype(fn_get_color_modulation)>(pattern_scan("materialsystem.dll",
+			{0x55, 0x8B, 0xEC, 0x83, 0xEC, 0, 0x56, 0x8B, 0xF1, 0x8A, 0x46}));
+
+		fn_pre_render_3d_skybox_world = reinterpret_cast<decltype(fn_pre_render_3d_skybox_world)>(pattern_scan("client.dll",
+			{0x83, 0xF9, 0x01, 0x8B, 0x0D, 0, 0, 0, 0}));
+
+		fn_set_skybox = reinterpret_cast<decltype(fn_set_skybox)>(pattern_scan("engine.dll",
+			{0x55, 0x8B, 0xEC, 0x81, 0xEC, 0, 0, 0, 0, 0x56, 0x57, 0x8B, 0xF9, 0xC7, 0x45}));
 	}
 }

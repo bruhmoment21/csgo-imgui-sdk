@@ -237,6 +237,7 @@ namespace hooks
 	void __stdcall frame_stage_notify(frame_stage_t frame_stage) noexcept
 	{
 		local_player::entity = sdk::entity_list->get_client_entity(sdk::engine->get_local_player());
+		math::matrix = sdk::engine->world_to_screen_matrix();
 
 		if (sdk::engine->is_connected() && local_player::entity && sdk::engine->get_player_info(local_player::entity->index(), local_player::info))
 		{

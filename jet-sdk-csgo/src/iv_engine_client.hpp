@@ -65,6 +65,11 @@ public:
 		return is_in_game() && is_connected();
 	}
 
+	matrix_4x4 world_to_screen_matrix()
+	{
+		return utilities::call_virtual<const matrix_4x4&, 37>(this);
+	}
+
 	const char* get_level_name()
 	{
 		return utilities::call_virtual<const char*, 52>(this);
