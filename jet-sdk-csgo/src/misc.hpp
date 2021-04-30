@@ -2,6 +2,6 @@
 
 namespace misc
 {
-	void bypass_invite_cooldown() noexcept;
-	void fake_prime() noexcept;
+	void bypass_invite_cooldown();
+	void fake_prime();
 }
