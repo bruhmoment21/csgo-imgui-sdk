@@ -38,6 +38,17 @@ struct emit_sound_t
 	void* sound_parameters;
 };
 
+enum class account_status_t : int
+{
+	none = 0,
+	not_identifying,
+	awaiting_cooldown,
+	eligible,
+	eligible_with_takeover,
+	elevated, // prime
+	account_cooldown
+};
+
 static void MH_CreateHookSafe(void* const target, void* const detour, void* const original, const char* detour_name)
 {
 	if (MH_CreateHook(static_cast<LPVOID>(target), static_cast<LPVOID>(detour), static_cast<LPVOID*>(original)) != MH_OK)
@@ -79,6 +90,7 @@ namespace hooks
 		MH_CreateHookSafe(dispatch_user_message_target, &dispatch_user_message, &original::dispatch_user_message, "dispatch_user_message");
 		MH_CreateHookSafe(signatures::fn_perform_screen_overlay, &perform_screen_overlay, &original::perform_screen_overlay, "perform_screen_overlay");
 		MH_CreateHookSafe(frame_stage_notify_target, &frame_stage_notify, &original::frame_stage_notify, "frame_stage_notify");
+		MH_CreateHookSafe(signatures::fn_get_account_data, &get_account_data, &original::get_account_data, "get_account_data");
 
 		MH_EnableHook(nullptr);
 	}
@@ -120,7 +132,6 @@ namespace hooks
 		{
 			ImGui::CreateContext();
 			ImGui_ImplWin32_Init(window);
-			menu::initialize();
 
 			return true;
 		}(window);
@@ -140,6 +151,11 @@ namespace hooks
 
 	long __stdcall present(IDirect3DDevice9* device, const RECT* src, const RECT* dest, HWND window_override, const RGNDATA* dirty_region) noexcept
 	{
+		if (!ImGui::GetCurrentContext()) return original::present(device, src, dest, window_override, dirty_region);
+
+		static const bool imgui_init{ ImGui_ImplDX9_Init(device) };
+		static const bool menu_init{ menu::initialize() };
+
 		IDirect3DVertexDeclaration9* vert_declaration;
 		IDirect3DVertexShader9* vert_shader;
 		DWORD old_d3drs_colorwriteenable;
@@ -156,13 +172,6 @@ namespace hooks
 		device->SetSamplerState(NULL, D3DSAMP_ADDRESSW, D3DTADDRESS_WRAP);
 		device->SetSamplerState(NULL, D3DSAMP_SRGBTEXTURE, NULL);
 
-		if (!ImGui::GetCurrentContext())
-		{
-			ImGui::CreateContext();
-		}
-
-		ImGui_ImplDX9_Init(device);
-
 		ImGui_ImplDX9_NewFrame();
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
@@ -173,7 +182,6 @@ namespace hooks
 		}
 
 		misc::bypass_invite_cooldown();
-		misc::fake_prime();
 
 		menu::render();
 
@@ -205,14 +213,14 @@ namespace hooks
 		original::lock_cursor(sdk::surface);
 	}
 
-	void __stdcall emit_sound(emit_sound_t sound) noexcept
+	int __stdcall emit_sound(emit_sound_t sound) noexcept
 	{
 		if (config::auto_accept && !sdk::engine->is_connected() && !std::strcmp(sound.entry, "UIPanorama.popup_accept_match_beep"))
 		{
 			sdk::panorama_ui_engine->access_ui_engine()->dispatch_event(signatures::match_assisted_accept(nullptr));
 		}
 
-		original::emit_sound(sdk::engine_sound, sound);
+		return original::emit_sound(sdk::engine_sound, sound);
 	}
 
 	bool __stdcall dispatch_user_message(cstrike_user_messages_t type, int arg, int length, void* data) noexcept
@@ -245,6 +253,20 @@ namespace hooks
 		}
 
 		original::frame_stage_notify(sdk::client, frame_stage);
+	}
+
+	int __fastcall get_account_data(void* _this, void* edx) noexcept
+	{
+		const auto ret = original::get_account_data(_this);
+
+		account_status_t& account_status = *reinterpret_cast<account_status_t*>(ret + 24);
+		static const bool is_originally_prime_account = account_status == account_status_t::elevated;
+		if (!is_originally_prime_account)
+		{
+			account_status = config::fake_prime ? account_status_t::elevated : account_status_t::none;
+		}
+
+		return ret;
 	}
 
 	void sequence(recv_proxy_data_t& proxy_data_ref, void* ent, void* output) noexcept

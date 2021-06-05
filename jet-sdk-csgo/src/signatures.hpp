@@ -1,5 +1,7 @@
 #pragma once
 
+#include "c_input.hpp"
+
 class game_rules_t;
 class player_resource_t;
 
@@ -24,24 +26,31 @@ namespace signatures
 	inline std::uintptr_t* panorama_marshall_helper; // "68 ? ? ? ? 8B C8 E8 ? ? ? ? 8D 4D F4 FF 15 ? ? ? ? 8B CF FF 15 ? ? ? ? 5F 5E 8B E5 5D C3" + 1
 	inline IDirect3DDevice9* directx; // "A1 ? ? ? ? 50 8B 08 FF 51 0C" + 1
 
-	using setup_event_fn = std::add_pointer_t<std::uintptr_t(int(***)())>; // use nullptr as parameter. add +3 as offset and then dereference
+	using setup_event_fn = std::add_pointer_t<std::uintptr_t(int(***)())>; // use nullptr as parameter.
 	inline setup_event_fn match_assisted_accept; // xref "MatchAssistedAccept"
 
 	inline std::uint8_t* delayed_lobby; // https://www.unknowncheats.me/forum/counterstrike-global-offensive/443148-invite-cooldown-partly-clientsided.html
-	inline std::uint8_t* fake_prime; // "17 F6 40 14 10" - 1
 	inline std::uintptr_t client_system; // "8B 0D ? ? ? ? 6A 00 83 EC 10" + 2	
 	inline std::uintptr_t local_inventory_offset; // "8B 8F ? ? ? ? 0F B7 C0 50" + 2
 	inline std::uintptr_t inventory_offset; // "8D 9E ? ? ? ? 8B 0B" + 2
 	inline cs_inventory_manager* inventory_manager; // "B9 ? ? ? ? 8D 44 24 10 89 54 24 14" + 1
 	inline std::uintptr_t failed_to_open_crate; // "68 ? ? ? ? 8B 01 8B 80 ? ? ? ? FF D0 84 C0 74 1A 8B 35 ? ? ? ? 8B D3 33 C9 8B 3E E8 ? ? ? ? 50 8B CE FF 97 ? ? ? ? 5F 5E B0 01 5B 8B E5 5D C2 04 ?" + 1
 	inline std::uintptr_t item_customization_notification; // "68 ? ? ? ? 8B 80 ? ? ? ? FF D0 84 C0 74 28" + 1
-	inline std::byte* loot_list_items_count_return_address; // "85 C0 0F 84 ? ? ? ? 8B C8 E8 ? ? ? ? 52 50 E8 ? ? ? ? 83 C4 08 89 44 24 14 85 C0 0F 84 ? ? ? ? 8B 0D"
 	inline std::uint8_t* is_loadout_allowed; // "8B 40 6C FF D0 ? ? ? ? ? ? 5F" + 5
 	inline std::byte* accumulate_layers_return_address; // "84 C0 75 0D F6 87"
 	inline std::byte* setup_velocity_return_address; // "84 C0 75 38 8B 0D ? ? ? ? 8B 01 8B 80 ? ? ? ? FF D0"
 	inline std::uintptr_t hud; // "B9 ? ? ? ? E8 ? ? ? ? 8B 5D 08" + 1
 	inline game_rules_t** game_rules; // "8B 0D ? ? ? ? 85 C9 74 1A 8A 41 7D" + 2
 	inline player_resource_t** player_resource; // "8B 3D ? ? ? ? 85 FF 0F 84 ? ? ? ? 81 C7" + 2
+	inline std::byte* set_nametag_return_address; // "8B F8 C6 45 08 ? 33 C0"
+	inline std::byte* clear_nametag_return_address; // "FF 50 1C 8B F0 85 F6 74 21" + 3
+	inline std::byte* used_tool_return_address; // "85 C0 0F 84 ? ? ? ? 8B C8 E8 ? ? ? ? 8B 37"
+	inline std::byte* used_item_return_address; // used_tool_return_address + 52
+	inline std::byte* wear_item_sticker_get_as_number_return_address; // "DD 5C 24 18 F2 0F 2C 7C 24 ? 85 FF"
+	inline std::byte* wear_item_sticker_get_as_string_return_address; // wear_item_sticker_get_as_number_return_address - 80
+	inline std::byte* set_sticker_get_slot_as_number_return_address; // "FF D2 DD 5C 24 10 F2 0F 2C 7C 24" + 2
+	inline std::byte* delete_item_return_address; // "FF 50 1C 85 C0 74 22" + 3
+	inline c_input* input; // "B9 ? ? ? ? 8B 40 38 FF D0 84 C0 0F 85" + 1
 
 	// Functions
 	using fn_add_econ_item_t = bool(__thiscall*)(void*, c_econ_item*, int, int, char);
@@ -73,9 +82,6 @@ namespace signatures
 
 	using fn_get_static_data_t = c_econ_item_definition * (__thiscall*)(void*);
 	inline fn_get_static_data_t fn_get_static_data; // "55 8B EC 51 53 8B D9 8B 0D ? ? ? ? 56 57 8B B9"
-
-	// Doesn't need a typedef because we are calling it with assembly. c_econ_item_definition * (__thiscall*)(void*);
-	inline void* fn_tool_can_apply_to; // "55 8B EC 83 EC 18 53 56 8B F1 57 8B FA"
 
 	using fn_create_econ_item_t = c_econ_item * (__stdcall*)();
 	inline fn_create_econ_item_t fn_create_econ_item; // "A1 ? ? ? ? 6A 38 8B 08 8B 01 FF 50 04 85 C0 74 07 8B C8 E9 ? ? ? ? 33 C0 C3 ? ? ? ? A1 ? ? ? ?"
@@ -148,4 +154,6 @@ namespace signatures
 
 	using fn_set_skybox_t = void(__fastcall*)(const char*);
 	inline fn_set_skybox_t fn_set_skybox; // "55 8B EC 81 EC ? ? ? ? 56 57 8B F9 C7 45"
+
+	inline void* fn_get_account_data; // E8 ? ? ? ? 83 F8 06 77 42 + 1 [relative]
 }

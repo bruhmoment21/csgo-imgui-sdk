@@ -122,6 +122,9 @@
     <ClCompile Include="src\math.cpp">
       <Filter>src\math</Filter>
     </ClCompile>
+    <ClCompile Include="src\c_econ.cpp">
+      <Filter>valve\classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\pch.hpp" />
@@ -294,6 +297,9 @@
       <Filter>valve\interfaces</Filter>
     </ClInclude>
     <ClInclude Include="src\c_key_values.hpp">
+      <Filter>valve\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\c_input.hpp">
       <Filter>valve\classes</Filter>
     </ClInclude>
   </ItemGroup>

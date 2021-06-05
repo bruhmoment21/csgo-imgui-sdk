@@ -12,7 +12,7 @@
 
 namespace menu
 {
-	void initialize() noexcept
+	bool initialize() noexcept
 	{
 		auto& io{ImGui::GetIO()};
 		io.IniFilename = nullptr;
@@ -25,6 +25,8 @@ namespace menu
 		style.ScrollbarSize = 13.0f;
 		style.WindowTitleAlign = ImVec2{0.5f, 0.5f};
 		style.WindowRounding = 6.f;
+
+		return true;
 	}
 
 	void render() noexcept

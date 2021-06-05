@@ -1,9 +1,7 @@
 #pragma once
 
-#include "sdk.hpp"
 #include "signatures.hpp"
-
-#include "c_utl_vector.hpp"
+#include "sdk.hpp"
 
 enum class item_rarity_t : int;
 enum class item_quality_t : int;
@@ -20,6 +18,18 @@ struct attribute_info_t
 	{
 		return id == other;
 	}
+};
+
+struct item_list_entry_t
+{
+	short definition_index; 	// 0x0 		0
+	int paint_kit;				// 0x4 		4
+	int rarity;					// 0x8		8 - USED IN ANOTHER SCOPE
+	float paint_kit_wear;		// 0xC 		12 - UNUSED
+	int sticker_id;				// 0x10 	16
+	int music_kit;				// 0x14 	20
+	bool nested_list;			// 0x18 	24
+	bool unusual_list;			// 0x1C 	28 - UNUSED
 };
 
 class c_econ_item_definition
@@ -42,18 +52,18 @@ public:
 
 	const char* get_localize_name()
 	{
-		const auto token = *reinterpret_cast<const char**>(this + 0x4C);
+		const auto token = *reinterpret_cast<const char**>(this + 0x4C); // item_name
 		return sdk::localize->find_as_utf(token);
 	}
 
-	const char* get_item_name()
+	const char* get_item_name() // name
 	{
 		return *reinterpret_cast<const char**>(this + 0x1DC);
 	}
 
-	const char* get_inventory_image()
+	const char* get_inventory_image() // image_inventory
 	{
-		return reinterpret_cast<const char*>((*(int(__thiscall**)(void*))(*reinterpret_cast<unsigned long*>(this) + 0x14))(this));
+		return *reinterpret_cast<const char**>(this + 0x6C);
 	}
 
 	int get_rarity()
@@ -61,7 +71,7 @@ public:
 		return *reinterpret_cast<char*>(this + 0x2A);
 	}
 
-	int get_equipped_position()
+	int get_equipped_position() // get_loadout_slot
 	{
 		return *reinterpret_cast<int*>(this + 0x268);
 	}
@@ -145,11 +155,20 @@ class c_econ_sticker_definition // aka CStickerKit
 public:
 	const char* get_sticker_localize_name()
 	{
-		const auto token = *reinterpret_cast<const char**>(this + 0x28);
-		return sdk::localize->find_as_utf(token);
+		return sdk::localize->find_as_utf(get_item_name());
 	}
 
 	const char* get_name()
+	{
+		return *reinterpret_cast<const char**>(this + 0x8);
+	}
+
+	const char* get_description_string()
+	{
+		return *reinterpret_cast<const char**>(this + 0x18);
+	}
+
+	const char* get_item_name()
 	{
 		return *reinterpret_cast<const char**>(this + 0x28);
 	}
@@ -185,11 +204,41 @@ public:
 	}
 };
 
+class c_econ_music_definition
+{
+public:
+	short music_id;
+	char* name;
+	char* localized_name;
+	char* localized_description;
+	char* pedestal_display_model;
+	char* image_inventory;
+
+	const char* get_music_kit_localize_name()
+	{
+		return sdk::localize->find_as_utf(localized_name);
+	}
+};
+
+class c_econ_loot_list_definition
+{
+public:
+	const char* get_name()
+	{
+		return utilities::call_virtual<const char*, 0>(this);
+	}
+
+	c_utl_vector<item_list_entry_t> get_loot_list_contents()
+	{
+		return utilities::call_virtual<const c_utl_vector<item_list_entry_t>&, 1>(this);
+	}
+};
+
 class item_schema_t
 {
 public:
 	const char* get_crate_series_by_id(int index)
-	{		
+	{
 		const auto id = signatures::fn_get_crate_series_by_id(reinterpret_cast<std::uintptr_t>(this) + 0x17C, &index);
 		if (id == -1) return nullptr;
 
@@ -271,14 +320,19 @@ public:
 		return *reinterpret_cast<std::uintptr_t*>(*reinterpret_cast<std::uintptr_t*>(this + 0x120) + 4 * index);
 	}
 
-	std::uintptr_t get_loot_list_interface_by_name(const char* name, int unk) // "55 8B EC 83 E4 F8 8B 55 08 81 EC ? ? ? ? 56 57"
+	c_econ_loot_list_definition* get_loot_list_interface_by_name(const char* name) // "55 8B EC 83 E4 F8 8B 55 08 81 EC ? ? ? ? 56 57"
 	{
-		return utilities::call_virtual< std::uintptr_t, 31, const char*, int >(this, name, unk);
+		return utilities::call_virtual< c_econ_loot_list_definition*, 31, const char*, int >(this, name, 0);
 	}
-	
-	std::uintptr_t get_loot_list_interface_by_index(int index) // "55 8B EC 83 E4 F8 8B 55 08 81 EC ? ? ? ? 56 57"
+
+	c_econ_loot_list_definition* get_loot_list_interface_by_index(int index)
 	{
-		return utilities::call_virtual< std::uintptr_t, 32, int >(this, index);
+		return utilities::call_virtual< c_econ_loot_list_definition*, 32, int >(this, index);
+	}
+
+	c_econ_item_definition* get_item_by_name(const char* name)
+	{
+		return utilities::call_virtual< c_econ_item_definition*, 42, const char* >(this, name);
 	}
 };
 
@@ -316,26 +370,6 @@ public:
 		}
 
 		return nullptr;
-	}
-
-	bool tool_can_apply_to(c_econ_item_view* item)
-	{
-		bool ret_val;
-
-		__asm {
-			mov eax, this
-			add eax, 0xC
-			mov ecx, eax
-			mov eax, item
-			add eax, 0xC
-			mov edx, eax
-			push 0x4
-			call signatures::fn_tool_can_apply_to
-			mov ret_val, al
-			add esp, 4
-		};
-
-		return ret_val;
 	}
 };
 
@@ -398,11 +432,13 @@ public:
 		set_attribute_value(7, &seed);
 	}
 
-	void set_stattrak(int val)
+	void set_stattrak(int value)
 	{
-		int zero = 0;
-		set_attribute_value(80, &val);
-		set_attribute_value(81, &zero);
+		if (value < 0 || get_definition_index() > 4500) return;
+
+		int music_kit = get_definition_index() == 1314;
+		set_attribute_value(80, &value);
+		set_attribute_value(81, &music_kit);
 	}
 
 	void set_paint_wear(float wear)
@@ -410,7 +446,7 @@ public:
 		set_attribute_value(8, &wear);
 	}
 
-	void add_sticker(int index, int kit, float wear, float scale, float rotation)
+	void set_sticker(int index, int kit, float wear, float scale, float rotation)
 	{
 		set_attribute_value(113 + 4 * index, &kit);
 		set_attribute_value(114 + 4 * index, &wear);
@@ -435,85 +471,28 @@ public:
 		get_econ_item_data() = (data ^ (int(rarity) << 11)) & 0x7800 ^ data;
 	}
 
+	void set_origin(const int origin)
+	{
+		const auto data = get_econ_item_data();
+		get_econ_item_data() = data ^ (static_cast<std::uint8_t>(data) ^ static_cast<std::uint8_t>(origin)) & 0x1F;
+	}
+
+	void set_level(const int level)
+	{
+		const auto data = get_econ_item_data();
+		get_econ_item_data() = data ^ (data ^ (level << 9)) & 0x600;
+	}
+
 	void set_custom_name(const char* name)
 	{
 		signatures::fn_set_custom_name(this, name);
 	}
 };
 
-struct weapon_drop_info_t
+namespace crate_lootlist
 {
-	short definition_index;
-	int paint_kit;
-	int rarity;
-	int sticker_id;
-
-	static void fn_recursive_add_loot_to_loot_list(item_schema_t* const item_schema, std::uintptr_t a1, std::vector< weapon_drop_info_t >& drop) noexcept
-	{
-		auto size = *(unsigned long*) ((*(int(__thiscall**)(int))(*(unsigned long*) a1 + 4))(a1) + 12);
-		
-		auto v9 = 0;
-		auto v8 = 0u;
-		do
-		{
-			auto v4 = (unsigned long*) (*(int(__thiscall**)(int))(*(unsigned long*) a1 + 4))(a1);
-			auto v5 = v9 + *v4;
-
-			if (*reinterpret_cast<std::uint8_t*>(v5 + 24))
-			{
-				auto v7 = item_schema->get_loot_list_interface_by_index(*reinterpret_cast<unsigned long*>(v5));
-				fn_recursive_add_loot_to_loot_list(item_schema, v7, drop);
-			} else
-			{
-				const auto item_definition = *reinterpret_cast<int*>(v5);
-				const auto paint_kit = *reinterpret_cast<int*>(v5 + 0x4);
-				const auto sticker_kit = *reinterpret_cast<int*>(v5 + 0x10);
-
-				if (item_definition)
-				{
-					auto rarity = 0;
-
-					if (sticker_kit)
-					{
-						rarity = signatures::fn_get_item_schema()->get_sticker_by_skin_index(sticker_kit)->get_rarity();
-					} else
-					{
-						const auto item_def = signatures::fn_get_item_schema()->get_item_by_definition_index(item_definition);
-						const auto skin_def = !paint_kit ? nullptr : signatures::fn_get_item_schema()->get_paint_kit_by_skin_index(paint_kit);
-						const auto item_rarity = item_def ? item_def->get_rarity() : 0;
-						const auto skin_rarity = skin_def ? skin_def->get_rarity() : 0;
-
-						const auto skin_rarity_fixed = (skin_rarity == 7) + 6;
-						rarity = item_rarity + skin_rarity - 1;
-
-						if (rarity >= 0)
-						{
-							if (rarity > skin_rarity_fixed)
-							{
-								rarity = skin_rarity_fixed;
-							}
-						} else
-						{
-							rarity = 0;
-						}
-					}
-
-					drop.emplace_back(item_definition, paint_kit, rarity, sticker_kit);
-				}
-			}
-
-			v9 += 28;
-			++v8;
-		} while (v8 < size);
-	}
-
-	static auto get_weapons_for_crate(const char* name)
-	{
-		auto drop = std::vector< weapon_drop_info_t >{ };
-		auto* const item_schema = signatures::fn_get_item_schema() + 4;
-
-		fn_recursive_add_loot_to_loot_list(item_schema, item_schema->get_loot_list_interface_by_name(name, 0), drop);
-
-		return drop;
-	}
-};
+	void initialize() noexcept;
+	void reserve_crates(const std::size_t size) noexcept;
+	std::vector< item_list_entry_t > get_weapons(const char* lootlist_name) noexcept;
+	bool has_more_than_one_drop(const char* lootlist_name) noexcept;
+}

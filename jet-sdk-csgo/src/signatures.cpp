@@ -35,8 +35,14 @@ struct module_t
 
 static std::unordered_map<std::uint32_t, module_t> modules;
 
+template <typename T>
+static auto relative_to_absolute(const T& address) noexcept
+{
+	return address + 4 + *reinterpret_cast<int*>(address);
+}
+
 template <std::size_t size> // Thanks cristeigabriel!
-static std::byte* pattern_scan(const char* module_name, const int(&pattern)[size])
+static std::byte* pattern_scan(const char* module_name, const int(&&pattern)[size])
 {
 	/*
 	* Faster pattern scanning function. (Avoids heap allocations).
@@ -93,17 +99,6 @@ static std::byte* pattern_scan(const char* module_name, const int(&pattern)[size
 	throw std::runtime_error{"Pattern with " + std::to_string(size) + " bytes is wrong!"};
 }
 
-static auto relative_to_absolute(const std::byte* const address) noexcept
-{
-	const auto new_address = reinterpret_cast<std::uintptr_t>(address);
-	return new_address + 4 + *reinterpret_cast<int*>(new_address);
-}
-
-static auto relative_to_absolute(const std::uintptr_t address) noexcept
-{
-	return address + 4 + *reinterpret_cast<int*>(address);
-}
-
 namespace signatures
 {
 	void initialize()
@@ -119,9 +114,6 @@ namespace signatures
 
 		delayed_lobby = reinterpret_cast<decltype(delayed_lobby)>(pattern_scan("client.dll",
 			{0x63, 0x8B, 0x76, 0x24}) - 1);
-
-		fake_prime = reinterpret_cast<decltype(fake_prime)>(pattern_scan("client.dll",
-			{0x17, 0xF6, 0x40, 0x14, 0x10}) - 1);
 
 		client_system = **reinterpret_cast<decltype(client_system)**>(pattern_scan("client.dll",
 			{0x8B, 0x0D, 0, 0, 0, 0, 0x6A, 0, 0x83, 0xEC, 0x10}) + 2);
@@ -141,9 +133,6 @@ namespace signatures
 		item_customization_notification = *reinterpret_cast<decltype(item_customization_notification)*>(pattern_scan("client.dll",
 			{0x68, 0, 0, 0, 0, 0x8B, 0x80, 0, 0, 0, 0, 0xFF, 0xD0, 0x84, 0xC0, 0x74, 0x28}) + 1);
 
-		loot_list_items_count_return_address = reinterpret_cast<decltype(loot_list_items_count_return_address)>(pattern_scan("client.dll",
-			{0x85, 0xC0, 0x0F, 0x84, 0, 0, 0, 0, 0x8B, 0xC8, 0xE8, 0, 0, 0, 0, 0x52, 0x50, 0xE8, 0, 0, 0, 0, 0x83, 0xC4, 0x08, 0x89, 0x44, 0x24, 0x14, 0x85, 0xC0, 0x0F, 0x84, 0, 0, 0, 0, 0x8B, 0x0D}));
-
 		is_loadout_allowed = reinterpret_cast<decltype(is_loadout_allowed)>(pattern_scan("client.dll",
 			{0x8B, 0x40, 0x6C, 0xFF, 0xD0, 0, 0, 0, 0, 0, 0, 0x5F}) + 5);
 
@@ -155,7 +144,6 @@ namespace signatures
 
 		auto* const temp = reinterpret_cast<std::uintptr_t*>(pattern_scan("client.dll", 
 			{0xB9, 0, 0, 0, 0, 0xE8, 0, 0, 0, 0, 0x8B, 0x5D, 0x08}) + 1);
-
 		hud = *temp;
 
 		game_rules = *reinterpret_cast<decltype(game_rules)*>(pattern_scan("client.dll",
@@ -163,6 +151,31 @@ namespace signatures
 
 		player_resource = *reinterpret_cast<decltype(player_resource)*>(pattern_scan("client.dll",
 			{0x8B, 0x3D, 0, 0, 0, 0, 0x85, 0xFF, 0x0F, 0x84, 0, 0, 0, 0, 0x81, 0xC7}) + 2);
+
+		set_nametag_return_address = reinterpret_cast<decltype(set_nametag_return_address)>(pattern_scan("client.dll", 
+			{0x8B, 0xF8, 0xC6, 0x45, 0x08, 0, 0x33, 0xC0}));
+
+		clear_nametag_return_address = reinterpret_cast<decltype(clear_nametag_return_address)>(pattern_scan("client.dll", 
+			{0xFF, 0x50, 0x1C, 0x8B, 0xF0, 0x85, 0xF6, 0x74, 0x21}) + 3);
+
+		used_tool_return_address = reinterpret_cast<decltype(used_tool_return_address)>(pattern_scan("client.dll", 
+			{0x85, 0xC0, 0x0F, 0x84, 0, 0, 0, 0, 0x8B, 0xC8, 0xE8, 0, 0, 0, 0, 0x8B, 0x37}));
+		
+		used_item_return_address = used_tool_return_address + 52;
+
+		wear_item_sticker_get_as_number_return_address = reinterpret_cast<decltype(wear_item_sticker_get_as_number_return_address)>(pattern_scan("client.dll", 
+			{0xDD, 0x5C, 0x24, 0x18, 0xF2, 0x0F, 0x2C, 0x7C, 0x24, 0, 0x85, 0xFF}));
+
+		wear_item_sticker_get_as_string_return_address = wear_item_sticker_get_as_number_return_address - 80;
+
+		set_sticker_get_slot_as_number_return_address = reinterpret_cast<decltype(set_sticker_get_slot_as_number_return_address)>(pattern_scan("client.dll", 
+			{0xFF, 0xD2, 0xDD, 0x5C, 0x24, 0x10, 0xF2, 0x0F, 0x2C, 0x7C, 0x24}) + 2);
+
+		delete_item_return_address = reinterpret_cast<decltype(delete_item_return_address)>(pattern_scan("client.dll", 
+			{0xFF, 0x50, 0x1C, 0x85, 0xC0, 0x74, 0x22}) + 3);
+
+		input = *reinterpret_cast<decltype(input)*>(pattern_scan("client.dll", 
+			{0xB9, 0, 0, 0, 0, 0x8B, 0x40, 0x38, 0xFF, 0xD0, 0x84, 0xC0, 0x0F, 0x85}) + 1);
 
 		// Functions
 		fn_add_econ_item = reinterpret_cast<decltype(fn_add_econ_item)>(pattern_scan("client.dll",
@@ -194,9 +207,6 @@ namespace signatures
 
 		fn_get_static_data = reinterpret_cast<decltype(fn_get_static_data)>(pattern_scan("client.dll",
 			{0x55, 0x8B, 0xEC, 0x51, 0x53, 0x8B, 0xD9, 0x8B, 0x0D, 0, 0, 0, 0, 0x56, 0x57, 0x8B, 0xB9}));
-
-		fn_tool_can_apply_to = reinterpret_cast<decltype(fn_tool_can_apply_to)>(pattern_scan("client.dll",
-			{0x55, 0x8B, 0xEC, 0x83, 0xEC, 0x18, 0x53, 0x56, 0x8B, 0xF1, 0x57, 0x8B, 0xFA}));
 
 		fn_create_econ_item = reinterpret_cast<decltype(fn_create_econ_item)>((pattern_scan("client.dll",
 			{0xA1, 0, 0, 0, 0, 0x6A, 0x38, 0x8B, 0x08, 0x8B, 0x01, 0xFF, 0x50, 0x04, 0x85, 0xC0, 0x74, 0x07, 0x8B, 0xC8, 0xE9, 0, 0, 0, 0, 0x33, 0xC0, 0xC3, 0, 0, 0, 0, 0xA1, 0, 0, 0, 0})));
@@ -265,17 +275,22 @@ namespace signatures
 
 		fn_get_sequence_activity = reinterpret_cast<decltype(fn_get_sequence_activity)>(pattern_scan("client.dll",
 			{0x55, 0x8B, 0xEC, 0x53, 0x8B, 0x5D, 0x08, 0x56, 0x8B, 0xF1, 0x83}));
-
+		
 		fn_static_prop_init = reinterpret_cast<decltype(fn_static_prop_init)>(relative_to_absolute(pattern_scan("engine.dll",
 			{0xE8, 0, 0, 0, 0, 0x8B, 0x0F, 0x03, 0xCE}) + 1));
 
 		fn_get_color_modulation = reinterpret_cast<decltype(fn_get_color_modulation)>(pattern_scan("materialsystem.dll",
 			{0x55, 0x8B, 0xEC, 0x83, 0xEC, 0, 0x56, 0x8B, 0xF1, 0x8A, 0x46}));
 
-		fn_pre_render_3d_skybox_world = reinterpret_cast<decltype(fn_pre_render_3d_skybox_world)>(pattern_scan("client.dll",
+		fn_pre_render_3d_skybox_world = reinterpret_cast<decltype(fn_pre_render_3d_skybox_world)>(pattern_scan("client.dll", 
 			{0x83, 0xF9, 0x01, 0x8B, 0x0D, 0, 0, 0, 0}));
 
-		fn_set_skybox = reinterpret_cast<decltype(fn_set_skybox)>(pattern_scan("engine.dll",
+		fn_set_skybox = reinterpret_cast<decltype(fn_set_skybox)>(pattern_scan("engine.dll", 
 			{0x55, 0x8B, 0xEC, 0x81, 0xEC, 0, 0, 0, 0, 0x56, 0x57, 0x8B, 0xF9, 0xC7, 0x45}));
+
+		fn_get_account_data = reinterpret_cast<decltype(fn_get_account_data)>(relative_to_absolute(pattern_scan("client.dll",
+			{0xE8, 0, 0, 0, 0, 0x85, 0xC0, 0x74, 0xEE }) + 1));
+
+		modules.clear();
 	}
 }
